@@ -1,19 +1,9 @@
-var majorityElement = function (nums) {
-  let map = new Map();
+var findDuplicate = function (nums) {
+  duplicates = nums.filter((items, index) => nums.indexOf(items) !== index);
 
-  for (let n of nums) {
-    map.set(n, (map.get(n) || 0) + 1);
-  }
-
-  let majority = Math.floor(nums.length / 2);
-
-  for (let [key, value] of map) {
-    if (value > majority) {
-      return key;
-    }
-  }
+  return parseInt(duplicates[0]);
 };
 
-nums = [3, 2, 3];
+nums = [3, 3, 3, 3, 3];
 
-console.log(majorityElement(nums));
+console.log(findDuplicate(nums));
