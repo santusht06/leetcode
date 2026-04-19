@@ -1,5 +1,3 @@
-SELECT 
-    player_id,
-    MIN(event_date) AS first_login
-FROM Activity
-GROUP BY player_id;
+SELECT name
+FROM Customer
+WHERE referee_id != 2 OR referee_id IS NULL;
