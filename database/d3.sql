@@ -1,15 +1,9 @@
-WITH temp AS (
-    SELECT *,
-           id - ROW_NUMBER() OVER (ORDER BY id) AS grp
-    FROM Stadium
-    WHERE people >= 100
-)
-SELECT id, visit_date, people
-FROM temp
-WHERE grp IN (
-    SELECT grp
-    FROM temp
-    GROUP BY grp
-    HAVING COUNT(*) >= 3
-)
-ORDER BY visit_date;
+SELECT id, COUNT(*) AS num
+FROM (
+    SELECT requester_id AS id FROM RequestAccepted
+    UNION ALL
+    SELECT accepter_id AS id FROM RequestAccepted
+) t
+GROUP BY id
+ORDER BY num DESC
+LIMIT 1;
