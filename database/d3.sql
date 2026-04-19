@@ -1,9 +1,8 @@
-# Write your MySQL query statement below
-SELECT name
-FROM SalesPerson
-WHERE sales_id NOT IN (
-    SELECT o.sales_id
-    FROM Orders o
-    JOIN Company c ON o.com_id = c.com_id
-    WHERE c.name = 'RED'
-);
+SELECT 
+    id,
+    CASE
+        WHEN p_id IS NULL THEN 'Root'
+        WHEN id NOT IN (SELECT DISTINCT p_id FROM Tree WHERE p_id IS NOT NULL) THEN 'Leaf'
+        ELSE 'Inner'
+    END AS type
+FROM Tree;
