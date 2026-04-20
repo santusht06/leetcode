@@ -1,23 +1,14 @@
 /**
  * @param {number[]} nums
- * @return {number[]}
+ * @param {number} original
+ * @return {number}
  */
-var findLonely = function (nums) {
-  let map = new Map();
+var findFinalValue = function (nums, original) {
+  let set = new Set(nums);
 
-  // Step 1: count frequency
-  for (let num of nums) {
-    map.set(num, (map.get(num) || 0) + 1);
+  while (set.has(original)) {
+    original = original * 2;
   }
 
-  let result = [];
-
-  // Step 2: check lonely condition
-  for (let num of nums) {
-    if (map.get(num) === 1 && !map.has(num - 1) && !map.has(num + 1)) {
-      result.push(num);
-    }
-  }
-
-  return result;
+  return original;
 };
