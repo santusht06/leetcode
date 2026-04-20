@@ -1,43 +1,21 @@
 /**
- * @param {number[]} nums
- * @return {number[]}
+ * @param {string} s
+ * @param {string} t
+ * @return {boolean}
  */
-var majorityElement = function (nums) {
-  let count1 = 0,
-    count2 = 0;
-  let candidate1 = null,
-    candidate2 = null;
+var isAnagram = function (s, t) {
+  if (s.length !== t.length) return false;
 
-  for (let num of nums) {
-    if (num === candidate1) {
-      count1++;
-    } else if (num === candidate2) {
-      count2++;
-    } else if (count1 === 0) {
-      candidate1 = num;
-      count1 = 1;
-    } else if (count2 === 0) {
-      candidate2 = num;
-      count2 = 1;
-    } else {
-      count1--;
-      count2--;
-    }
+  let count = new Array(26).fill(0);
+
+  for (let i = 0; i < s.length; i++) {
+    count[s.charCodeAt(i) - 97]++; // increase for s
+    count[t.charCodeAt(i) - 97]--; // decrease for t
   }
 
-  count1 = 0;
-  count2 = 0;
-
-  for (let num of nums) {
-    if (num === candidate1) count1++;
-    else if (num === candidate2) count2++;
+  for (let c of count) {
+    if (c !== 0) return false;
   }
 
-  let result = [];
-  let n = nums.length;
-
-  if (count1 > Math.floor(n / 3)) result.push(candidate1);
-  if (count2 > Math.floor(n / 3)) result.push(candidate2);
-
-  return result;
+  return true;
 };
