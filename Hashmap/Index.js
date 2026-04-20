@@ -1,21 +1,38 @@
 /**
- * @param {string} s
- * @param {string} t
- * @return {boolean}
+ * @param {number} n
+ * @return {number}
  */
-var isAnagram = function (s, t) {
-  if (s.length !== t.length) return false;
+var nthUglyNumber = function (n) {
+  let ugly = new Array(n);
+  ugly[0] = 1;
 
-  let count = new Array(26).fill(0);
+  let i2 = 0,
+    i3 = 0,
+    i5 = 0;
 
-  for (let i = 0; i < s.length; i++) {
-    count[s.charCodeAt(i) - 97]++; // increase for s
-    count[t.charCodeAt(i) - 97]--; // decrease for t
+  let next2 = 2,
+    next3 = 3,
+    next5 = 5;
+
+  for (let i = 1; i < n; i++) {
+    let nextUgly = Math.min(next2, next3, next5);
+    ugly[i] = nextUgly;
+
+    if (nextUgly === next2) {
+      i2++;
+      next2 = ugly[i2] * 2;
+    }
+
+    if (nextUgly === next3) {
+      i3++;
+      next3 = ugly[i3] * 3;
+    }
+
+    if (nextUgly === next5) {
+      i5++;
+      next5 = ugly[i5] * 5;
+    }
   }
 
-  for (let c of count) {
-    if (c !== 0) return false;
-  }
-
-  return true;
+  return ugly[n - 1];
 };
