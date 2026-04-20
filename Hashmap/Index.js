@@ -1,38 +1,30 @@
 /**
- * @param {number} n
- * @return {number}
+ * @param {string} secret
+ * @param {string} guess
+ * @return {string}
  */
-var nthUglyNumber = function (n) {
-  let ugly = new Array(n);
-  ugly[0] = 1;
+var getHint = function (secret, guess) {
+  let bulls = 0,
+    cows = 0;
+  let count = new Array(10).fill(0);
 
-  let i2 = 0,
-    i3 = 0,
-    i5 = 0;
+  for (let i = 0; i < secret.length; i++) {
+    let s = secret[i];
+    let g = guess[i];
 
-  let next2 = 2,
-    next3 = 3,
-    next5 = 5;
+    if (s === g) {
+      bulls++;
+    } else {
+      // if previously seen in guess → cow
+      if (count[s] < 0) cows++;
 
-  for (let i = 1; i < n; i++) {
-    let nextUgly = Math.min(next2, next3, next5);
-    ugly[i] = nextUgly;
+      // if previously seen in secret → cow
+      if (count[g] > 0) cows++;
 
-    if (nextUgly === next2) {
-      i2++;
-      next2 = ugly[i2] * 2;
-    }
-
-    if (nextUgly === next3) {
-      i3++;
-      next3 = ugly[i3] * 3;
-    }
-
-    if (nextUgly === next5) {
-      i5++;
-      next5 = ugly[i5] * 5;
+      count[s]++;
+      count[g]--;
     }
   }
 
-  return ugly[n - 1];
+  return `${bulls}A${cows}B`;
 };
