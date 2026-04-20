@@ -1,30 +1,24 @@
 /**
- * @param {string} s
- * @param {string} t
+ * @param {number[]} nums
+ * @param {number} k
  * @return {boolean}
  */
-var isIsomorphic = function (s, t) {
-  if (s.length !== t.length) return false;
+var containsNearbyDuplicate = function (nums, k) {
+  let set = new Set();
 
-  let mapST = new Map();
-  let mapTS = new Map();
-
-  for (let i = 0; i < s.length; i++) {
-    let charS = s[i];
-    let charT = t[i];
-
-    if (mapST.has(charS)) {
-      if (mapST.get(charS) !== charT) return false;
-    } else {
-      mapST.set(charS, charT);
+  for (let i = 0; i < nums.length; i++) {
+    // if duplicate found in window
+    if (set.has(nums[i])) {
+      return true;
     }
 
-    if (mapTS.has(charT)) {
-      if (mapTS.get(charT) !== charS) return false;
-    } else {
-      mapTS.set(charT, charS);
+    set.add(nums[i]);
+
+    // maintain window size k
+    if (set.size > k) {
+      set.delete(nums[i - k]);
     }
   }
 
-  return true;
+  return false;
 };
