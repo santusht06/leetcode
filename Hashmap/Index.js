@@ -1,30 +1,39 @@
 /**
- * @param {string} secret
- * @param {string} guess
- * @return {string}
+ * @param {string[]} startWords
+ * @param {string[]} targetWords
+ * @return {number}
  */
-var getHint = function (secret, guess) {
-  let bulls = 0,
-    cows = 0;
-  let count = new Array(10).fill(0);
+var wordCount = function (startWords, targetWords) {
+  const getMask = (word) => {
+    let mask = 0;
+    for (let ch of word) {
+      mask |= 1 << (ch.charCodeAt(0) - 97);
+    }
+    return mask;
+  };
 
-  for (let i = 0; i < secret.length; i++) {
-    let s = secret[i];
-    let g = guess[i];
+  let set = new Set();
 
-    if (s === g) {
-      bulls++;
-    } else {
-      // if previously seen in guess → cow
-      if (count[s] < 0) cows++;
+  // store all startWords masks
+  for (let word of startWords) {
+    set.add(getMask(word));
+  }
 
-      // if previously seen in secret → cow
-      if (count[g] > 0) cows++;
+  let count = 0;
 
-      count[s]++;
-      count[g]--;
+  for (let word of targetWords) {
+    let mask = getMask(word);
+
+    // try removing each character
+    for (let ch of word) {
+      let newMask = mask & ~(1 << (ch.charCodeAt(0) - 97));
+
+      if (set.has(newMask)) {
+        count++;
+        break;
+      }
     }
   }
 
-  return `${bulls}A${cows}B`;
+  return count;
 };
