@@ -1,39 +1,23 @@
 /**
- * @param {string[]} startWords
- * @param {string[]} targetWords
- * @return {number}
+ * @param {number[]} nums
+ * @return {number[]}
  */
-var wordCount = function (startWords, targetWords) {
-  const getMask = (word) => {
-    let mask = 0;
-    for (let ch of word) {
-      mask |= 1 << (ch.charCodeAt(0) - 97);
-    }
-    return mask;
-  };
+var findLonely = function (nums) {
+  let map = new Map();
 
-  let set = new Set();
-
-  // store all startWords masks
-  for (let word of startWords) {
-    set.add(getMask(word));
+  // Step 1: count frequency
+  for (let num of nums) {
+    map.set(num, (map.get(num) || 0) + 1);
   }
 
-  let count = 0;
+  let result = [];
 
-  for (let word of targetWords) {
-    let mask = getMask(word);
-
-    // try removing each character
-    for (let ch of word) {
-      let newMask = mask & ~(1 << (ch.charCodeAt(0) - 97));
-
-      if (set.has(newMask)) {
-        count++;
-        break;
-      }
+  // Step 2: check lonely condition
+  for (let num of nums) {
+    if (map.get(num) === 1 && !map.has(num - 1) && !map.has(num + 1)) {
+      result.push(num);
     }
   }
 
-  return count;
+  return result;
 };
