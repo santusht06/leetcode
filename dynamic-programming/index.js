@@ -1,30 +1,42 @@
 /**
- * @param {string} s
- * @return {number}
+ * @param {string} s1
+ * @param {string} s2
+ * @param {string} s3
+ * @return {boolean}
  */
-var numDecodings = function (s) {
-  if (s[0] === "0") return 0;
+var isInterleave = function (s1, s2, s3) {
+  let m = s1.length,
+    n = s2.length;
 
-  let n = s.length;
-  let dp = new Array(n + 1).fill(0);
+  if (m + n !== s3.length) return false;
 
-  dp[0] = 1;
-  dp[1] = 1;
+  let dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(false));
 
-  for (let i = 2; i <= n; i++) {
-    let one = parseInt(s.slice(i - 1, i));
-    let two = parseInt(s.slice(i - 2, i));
+  dp[0][0] = true;
 
-    // single digit
-    if (one >= 1) {
-      dp[i] += dp[i - 1];
-    }
+  // first row
+  for (let j = 1; j <= n; j++) {
+    dp[0][j] = dp[0][j - 1] && s2[j - 1] === s3[j - 1];
+  }
 
-    // two digit
-    if (two >= 10 && two <= 26) {
-      dp[i] += dp[i - 2];
+  // first column
+  for (let i = 1; i <= m; i++) {
+    dp[i][0] = dp[i - 1][0] && s1[i - 1] === s3[i - 1];
+  }
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      let k = i + j - 1;
+
+      if (s1[i - 1] === s3[k]) {
+        dp[i][j] = dp[i][j] || dp[i - 1][j];
+      }
+
+      if (s2[j - 1] === s3[k]) {
+        dp[i][j] = dp[i][j] || dp[i][j - 1];
+      }
     }
   }
 
-  return dp[n];
+  return dp[m][n];
 };
