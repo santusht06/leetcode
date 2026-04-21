@@ -6,22 +6,21 @@
 var mergeCharacters = function (s, k) {
   let arr = s.split("");
 
-  let i = 0;
+  while (true) {
+    let merged = false;
 
-  while (i < arr.length) {
-    let found = false;
-
-    for (let j = i + 1; j < arr.length && j - i <= k; j++) {
-      if (arr[i] === arr[j]) {
-        arr.splice(j, 1); // remove right one
-        found = true;
-        break;
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = i + 1; j < arr.length && j - i <= k; j++) {
+        if (arr[i] === arr[j]) {
+          arr.splice(j, 1); // remove right one
+          merged = true;
+          break;
+        }
       }
+      if (merged) break;
     }
 
-    if (!found) {
-      i++; // move forward only if no merge
-    }
+    if (!merged) break; // no more merges
   }
 
   return arr.join("");
