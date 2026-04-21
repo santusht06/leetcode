@@ -1,50 +1,43 @@
 /**
- * @param {string} s
- * @param {string} t
- * @return {string}
+ * @param {character[][]} board
+ * @param {string} word
+ * @return {boolean}
  */
-var minWindow = function (s, t) {
-  if (t.length > s.length) return "";
+var exist = function (board, word) {
+  let m = board.length;
+  let n = board[0].length;
 
-  let need = new Map();
-  for (let ch of t) {
-    need.set(ch, (need.get(ch) || 0) + 1);
-  }
+  const dfs = (i, j, k) => {
+    // matched full word
+    if (k === word.length) return true;
 
-  let window = new Map();
-  let have = 0;
-  let required = need.size;
+    // boundary + mismatch check
+    if (i < 0 || j < 0 || i >= m || j >= n || board[i][j] !== word[k])
+      return false;
 
-  let left = 0;
-  let minLen = Infinity;
-  let res = [-1, -1];
+    // mark visited
+    let temp = board[i][j];
+    board[i][j] = "#";
 
-  for (let right = 0; right < s.length; right++) {
-    let ch = s[right];
-    window.set(ch, (window.get(ch) || 0) + 1);
+    // explore 4 directions
+    let found =
+      dfs(i + 1, j, k + 1) ||
+      dfs(i - 1, j, k + 1) ||
+      dfs(i, j + 1, k + 1) ||
+      dfs(i, j - 1, k + 1);
 
-    // matched condition
-    if (need.has(ch) && window.get(ch) === need.get(ch)) {
-      have++;
-    }
+    // backtrack
+    board[i][j] = temp;
 
-    // shrink window
-    while (have === required) {
-      if (right - left + 1 < minLen) {
-        minLen = right - left + 1;
-        res = [left, right];
-      }
+    return found;
+  };
 
-      let leftChar = s[left];
-      window.set(leftChar, window.get(leftChar) - 1);
-
-      if (need.has(leftChar) && window.get(leftChar) < need.get(leftChar)) {
-        have--;
-      }
-
-      left++;
+  // try starting from each cell
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      if (dfs(i, j, 0)) return true;
     }
   }
 
-  return minLen === Infinity ? "" : s.slice(res[0], res[1] + 1);
+  return false;
 };
