@@ -1,30 +1,28 @@
-var wordBreak = function (s, wordDict) {
-  let set = new Set(wordDict);
-  let memo = new Map();
+/**
+ * @param {string} s
+ * @param {number} k
+ * @return {string}
+ */
+var mergeCharacters = function (s, k) {
+  let arr = s.split("");
 
-  const dfs = (str) => {
-    if (memo.has(str)) return memo.get(str);
+  let i = 0;
 
-    let res = [];
+  while (i < arr.length) {
+    let found = false;
 
-    if (str.length === 0) {
-      res.push("");
-      return res;
-    }
-
-    for (let word of set) {
-      if (str.startsWith(word)) {
-        let suffixWays = dfs(str.slice(word.length));
-
-        for (let way of suffixWays) {
-          res.push(word + (way === "" ? "" : " " + way));
-        }
+    for (let j = i + 1; j < arr.length && j - i <= k; j++) {
+      if (arr[i] === arr[j]) {
+        arr.splice(j, 1); // remove right one
+        found = true;
+        break;
       }
     }
 
-    memo.set(str, res);
-    return res;
-  };
+    if (!found) {
+      i++; // move forward only if no merge
+    }
+  }
 
-  return dfs(s);
+  return arr.join("");
 };
