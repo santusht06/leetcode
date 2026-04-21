@@ -1,34 +1,37 @@
 /**
  * @param {string} s
- * @return {string[][]}
+ * @return {number}
  */
-var partition = function (s) {
-  let res = [];
+var minCut = function (s) {
+  let n = s.length;
 
-  const isPalindrome = (str, l, r) => {
-    while (l < r) {
-      if (str[l] !== str[r]) return false;
-      l++;
-      r--;
-    }
-    return true;
-  };
+  // Step 1: palindrome table
+  let isPal = Array.from({ length: n }, () => Array(n).fill(false));
 
-  const backtrack = (start, path) => {
-    if (start === s.length) {
-      res.push([...path]);
-      return;
-    }
-
-    for (let end = start; end < s.length; end++) {
-      if (isPalindrome(s, start, end)) {
-        path.push(s.substring(start, end + 1));
-        backtrack(end + 1, path);
-        path.pop(); // backtrack
+  for (let i = n - 1; i >= 0; i--) {
+    for (let j = i; j < n; j++) {
+      if (s[i] === s[j] && (j - i <= 2 || isPal[i + 1][j - 1])) {
+        isPal[i][j] = true;
       }
     }
-  };
+  }
 
-  backtrack(0, []);
-  return res;
+  // Step 2: DP for min cuts
+  let dp = new Array(n).fill(0);
+
+  for (let i = 0; i < n; i++) {
+    if (isPal[0][i]) {
+      dp[i] = 0;
+    } else {
+      dp[i] = Infinity;
+
+      for (let j = 0; j < i; j++) {
+        if (isPal[j + 1][i]) {
+          dp[i] = Math.min(dp[i], dp[j] + 1);
+        }
+      }
+    }
+  }
+
+  return dp[n - 1];
 };
