@@ -1,47 +1,30 @@
 /**
- * @param {string} s1
- * @param {string} s2
- * @return {boolean}
+ * @param {string} s
+ * @return {number}
  */
-var isScramble = function (s1, s2) {
-  let memo = new Map();
+var numDecodings = function (s) {
+  if (s[0] === "0") return 0;
 
-  const dfs = (a, b) => {
-    let key = a + "#" + b;
-    if (memo.has(key)) return memo.get(key);
+  let n = s.length;
+  let dp = new Array(n + 1).fill(0);
 
-    if (a === b) return true;
+  dp[0] = 1;
+  dp[1] = 1;
 
-    // pruning: if char counts differ → false
-    let sortedA = a.split("").sort().join("");
-    let sortedB = b.split("").sort().join("");
-    if (sortedA !== sortedB) {
-      memo.set(key, false);
-      return false;
+  for (let i = 2; i <= n; i++) {
+    let one = parseInt(s.slice(i - 1, i));
+    let two = parseInt(s.slice(i - 2, i));
+
+    // single digit
+    if (one >= 1) {
+      dp[i] += dp[i - 1];
     }
 
-    let n = a.length;
-
-    for (let i = 1; i < n; i++) {
-      // case 1: no swap
-      if (dfs(a.slice(0, i), b.slice(0, i)) && dfs(a.slice(i), b.slice(i))) {
-        memo.set(key, true);
-        return true;
-      }
-
-      // case 2: swap
-      if (
-        dfs(a.slice(0, i), b.slice(n - i)) &&
-        dfs(a.slice(i), b.slice(0, n - i))
-      ) {
-        memo.set(key, true);
-        return true;
-      }
+    // two digit
+    if (two >= 10 && two <= 26) {
+      dp[i] += dp[i - 2];
     }
+  }
 
-    memo.set(key, false);
-    return false;
-  };
-
-  return dfs(s1, s2);
+  return dp[n];
 };
