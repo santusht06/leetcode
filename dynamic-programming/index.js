@@ -1,43 +1,47 @@
 /**
- * @param {character[][]} board
- * @param {string} word
+ * @param {string} s1
+ * @param {string} s2
  * @return {boolean}
  */
-var exist = function (board, word) {
-  let m = board.length;
-  let n = board[0].length;
+var isScramble = function (s1, s2) {
+  let memo = new Map();
 
-  const dfs = (i, j, k) => {
-    // matched full word
-    if (k === word.length) return true;
+  const dfs = (a, b) => {
+    let key = a + "#" + b;
+    if (memo.has(key)) return memo.get(key);
 
-    // boundary + mismatch check
-    if (i < 0 || j < 0 || i >= m || j >= n || board[i][j] !== word[k])
+    if (a === b) return true;
+
+    // pruning: if char counts differ → false
+    let sortedA = a.split("").sort().join("");
+    let sortedB = b.split("").sort().join("");
+    if (sortedA !== sortedB) {
+      memo.set(key, false);
       return false;
+    }
 
-    // mark visited
-    let temp = board[i][j];
-    board[i][j] = "#";
+    let n = a.length;
 
-    // explore 4 directions
-    let found =
-      dfs(i + 1, j, k + 1) ||
-      dfs(i - 1, j, k + 1) ||
-      dfs(i, j + 1, k + 1) ||
-      dfs(i, j - 1, k + 1);
+    for (let i = 1; i < n; i++) {
+      // case 1: no swap
+      if (dfs(a.slice(0, i), b.slice(0, i)) && dfs(a.slice(i), b.slice(i))) {
+        memo.set(key, true);
+        return true;
+      }
 
-    // backtrack
-    board[i][j] = temp;
+      // case 2: swap
+      if (
+        dfs(a.slice(0, i), b.slice(n - i)) &&
+        dfs(a.slice(i), b.slice(0, n - i))
+      ) {
+        memo.set(key, true);
+        return true;
+      }
+    }
 
-    return found;
+    memo.set(key, false);
+    return false;
   };
 
-  // try starting from each cell
-  for (let i = 0; i < m; i++) {
-    for (let j = 0; j < n; j++) {
-      if (dfs(i, j, 0)) return true;
-    }
-  }
-
-  return false;
+  return dfs(s1, s2);
 };
