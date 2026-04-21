@@ -1,37 +1,30 @@
-/**
- * @param {string} s
- * @return {number}
- */
-var minCut = function (s) {
-  let n = s.length;
+var wordBreak = function (s, wordDict) {
+  let set = new Set(wordDict);
+  let memo = new Map();
 
-  // Step 1: palindrome table
-  let isPal = Array.from({ length: n }, () => Array(n).fill(false));
+  const dfs = (str) => {
+    if (memo.has(str)) return memo.get(str);
 
-  for (let i = n - 1; i >= 0; i--) {
-    for (let j = i; j < n; j++) {
-      if (s[i] === s[j] && (j - i <= 2 || isPal[i + 1][j - 1])) {
-        isPal[i][j] = true;
-      }
+    let res = [];
+
+    if (str.length === 0) {
+      res.push("");
+      return res;
     }
-  }
 
-  // Step 2: DP for min cuts
-  let dp = new Array(n).fill(0);
+    for (let word of set) {
+      if (str.startsWith(word)) {
+        let suffixWays = dfs(str.slice(word.length));
 
-  for (let i = 0; i < n; i++) {
-    if (isPal[0][i]) {
-      dp[i] = 0;
-    } else {
-      dp[i] = Infinity;
-
-      for (let j = 0; j < i; j++) {
-        if (isPal[j + 1][i]) {
-          dp[i] = Math.min(dp[i], dp[j] + 1);
+        for (let way of suffixWays) {
+          res.push(word + (way === "" ? "" : " " + way));
         }
       }
     }
-  }
 
-  return dp[n - 1];
+    memo.set(str, res);
+    return res;
+  };
+
+  return dfs(s);
 };
