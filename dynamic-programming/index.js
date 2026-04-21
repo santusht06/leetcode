@@ -1,33 +1,50 @@
 /**
- * @param {string} word1
- * @param {string} word2
- * @return {number}
+ * @param {string} s
+ * @param {string} t
+ * @return {string}
  */
-var minDistance = function (word1, word2) {
-  let m = word1.length;
-  let n = word2.length;
+var minWindow = function (s, t) {
+  if (t.length > s.length) return "";
 
-  let dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+  let need = new Map();
+  for (let ch of t) {
+    need.set(ch, (need.get(ch) || 0) + 1);
+  }
 
-  // base cases
-  for (let i = 0; i <= m; i++) dp[i][0] = i;
-  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  let window = new Map();
+  let have = 0;
+  let required = need.size;
 
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (word1[i - 1] === word2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1];
-      } else {
-        dp[i][j] =
-          1 +
-          Math.min(
-            dp[i - 1][j], // delete
-            dp[i][j - 1], // insert
-            dp[i - 1][j - 1], // replace
-          );
+  let left = 0;
+  let minLen = Infinity;
+  let res = [-1, -1];
+
+  for (let right = 0; right < s.length; right++) {
+    let ch = s[right];
+    window.set(ch, (window.get(ch) || 0) + 1);
+
+    // matched condition
+    if (need.has(ch) && window.get(ch) === need.get(ch)) {
+      have++;
+    }
+
+    // shrink window
+    while (have === required) {
+      if (right - left + 1 < minLen) {
+        minLen = right - left + 1;
+        res = [left, right];
       }
+
+      let leftChar = s[left];
+      window.set(leftChar, window.get(leftChar) - 1);
+
+      if (need.has(leftChar) && window.get(leftChar) < need.get(leftChar)) {
+        have--;
+      }
+
+      left++;
     }
   }
 
-  return dp[m][n];
+  return minLen === Infinity ? "" : s.slice(res[0], res[1] + 1);
 };
