@@ -1,32 +1,34 @@
 /**
- * @param {string} beginWord
- * @param {string} endWord
- * @param {string[]} wordList
- * @return {number}
+ * @param {string} s
+ * @return {string[][]}
  */
-var ladderLength = function (beginWord, endWord, wordList) {
-  let wordSet = new Set(wordList);
-  if (!wordSet.has(endWord)) return 0;
+var partition = function (s) {
+  let res = [];
 
-  let queue = [[beginWord, 1]];
+  const isPalindrome = (str, l, r) => {
+    while (l < r) {
+      if (str[l] !== str[r]) return false;
+      l++;
+      r--;
+    }
+    return true;
+  };
 
-  while (queue.length) {
-    let [word, steps] = queue.shift();
+  const backtrack = (start, path) => {
+    if (start === s.length) {
+      res.push([...path]);
+      return;
+    }
 
-    if (word === endWord) return steps;
-
-    for (let i = 0; i < word.length; i++) {
-      for (let c = 97; c <= 122; c++) {
-        let next =
-          word.slice(0, i) + String.fromCharCode(c) + word.slice(i + 1);
-
-        if (wordSet.has(next)) {
-          queue.push([next, steps + 1]);
-          wordSet.delete(next); // mark visited
-        }
+    for (let end = start; end < s.length; end++) {
+      if (isPalindrome(s, start, end)) {
+        path.push(s.substring(start, end + 1));
+        backtrack(end + 1, path);
+        path.pop(); // backtrack
       }
     }
-  }
+  };
 
-  return 0;
+  backtrack(0, []);
+  return res;
 };
