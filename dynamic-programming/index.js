@@ -1,27 +1,15 @@
 /**
  * @param {string} s
- * @param {number} k
  * @return {string}
  */
-var mergeCharacters = function (s, k) {
-  let arr = s.split("");
+var trimTrailingVowels = function (s) {
+  let vowels = new Set(["a", "e", "i", "o", "u"]);
 
-  while (true) {
-    let merged = false;
+  let i = s.length - 1;
 
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = i + 1; j < arr.length && j - i <= k; j++) {
-        if (arr[i] === arr[j]) {
-          arr.splice(j, 1); // remove right one
-          merged = true;
-          break;
-        }
-      }
-      if (merged) break;
-    }
-
-    if (!merged) break; // no more merges
+  while (i >= 0 && vowels.has(s[i])) {
+    i--;
   }
 
-  return arr.join("");
+  return s.substring(0, i + 1);
 };
