@@ -1,9 +1,17 @@
 SELECT 
-    u.user_id AS buyer_id,
-    u.join_date,
-    COUNT(o.order_id) AS orders_in_2019
-FROM Users u
-LEFT JOIN Orders o
-    ON u.user_id = o.buyer_id
-    AND YEAR(o.order_date) = 2019
-GROUP BY u.user_id, u.join_date;
+    p.product_id,
+    COALESCE(p2.new_price, 10) AS price
+FROM (
+    SELECT DISTINCT product_id FROM Products
+) p
+LEFT JOIN (
+    SELECT product_id, new_price
+    FROM Products
+    WHERE (product_id, change_date) IN (
+        SELECT product_id, MAX(change_date)
+        FROM Products
+        WHERE change_date <= '2019-08-16'
+        GROUP BY product_id
+    )
+) p2
+ON p.product_id = p2.product_id;
