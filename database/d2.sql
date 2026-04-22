@@ -1,4 +1,4 @@
-SELECT actor_id, director_id
-FROM ActorDirector
-GROUP BY actor_id, director_id
-HAVING COUNT(*) >= 3;
+SELECT p.product_name, s.year, s.price
+FROM Sales s
+JOIN Product p
+ON s.product_id = p.product_id;
