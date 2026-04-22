@@ -1,15 +1,23 @@
-/**
- * @param {string} s
- * @return {string}
- */
-var trimTrailingVowels = function (s) {
-  let vowels = new Set(["a", "e", "i", "o", "u"]);
+var copyRandomList = function (head) {
+  if (!head) return null;
 
-  let i = s.length - 1;
+  let map = new Map();
 
-  while (i >= 0 && vowels.has(s[i])) {
-    i--;
+  // Step 1: create all nodes
+  let curr = head;
+  while (curr) {
+    map.set(curr, new _Node(curr.val, null, null));
+    curr = curr.next;
   }
 
-  return s.substring(0, i + 1);
+  // Step 2: assign next & random
+  curr = head;
+  while (curr) {
+    let copy = map.get(curr);
+    copy.next = curr.next ? map.get(curr.next) : null;
+    copy.random = curr.random ? map.get(curr.random) : null;
+    curr = curr.next;
+  }
+
+  return map.get(head);
 };
