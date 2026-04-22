@@ -1,4 +1,9 @@
-SELECT p.product_name, s.year, s.price
-FROM Sales s
-JOIN Product p
-ON s.product_id = p.product_id;
+SELECT 
+    u.user_id AS buyer_id,
+    u.join_date,
+    COUNT(o.order_id) AS orders_in_2019
+FROM Users u
+LEFT JOIN Orders o
+    ON u.user_id = o.buyer_id
+    AND YEAR(o.order_date) = 2019
+GROUP BY u.user_id, u.join_date;
