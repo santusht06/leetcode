@@ -1,12 +1,18 @@
 SELECT 
-    s.student_id,
-    s.student_name,
-    sub.subject_name,
-    COUNT(e.student_id) AS attended_exams
-FROM Students s
-CROSS JOIN Subjects sub
-LEFT JOIN Examinations e
-    ON s.student_id = e.student_id
-    AND sub.subject_name = e.subject_name
-GROUP BY s.student_id, s.student_name, sub.subject_name
-ORDER BY s.student_id, sub.subject_name;
+    visited_on,
+    SUM(amount) OVER (
+        ORDER BY visited_on 
+        ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+    ) AS amount,
+    ROUND(
+        AVG(amount) OVER (
+            ORDER BY visited_on 
+            ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+        ), 2
+    ) AS average_amount
+FROM (
+    SELECT visited_on, SUM(amount) AS amount
+    FROM Customer
+    GROUP BY visited_on
+) t
+LIMIT 6, 1000000;
