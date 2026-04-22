@@ -1,17 +1,11 @@
 SELECT 
-    p.product_id,
-    COALESCE(p2.new_price, 10) AS price
-FROM (
-    SELECT DISTINCT product_id FROM Products
-) p
-LEFT JOIN (
-    SELECT product_id, new_price
-    FROM Products
-    WHERE (product_id, change_date) IN (
-        SELECT product_id, MAX(change_date)
-        FROM Products
-        WHERE change_date <= '2019-08-16'
-        GROUP BY product_id
-    )
-) p2
-ON p.product_id = p2.product_id;
+    ROUND(
+        100 * SUM(order_date = customer_pref_delivery_date) / COUNT(*),
+        2
+    ) AS immediate_percentage
+FROM Delivery
+WHERE (customer_id, order_date) IN (
+    SELECT customer_id, MIN(order_date)
+    FROM Delivery
+    GROUP BY customer_id
+);
