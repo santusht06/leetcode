@@ -1,6 +1,11 @@
 SELECT 
-    query_name,
-    ROUND(AVG(rating * 1.0 / position), 2) AS quality,
-    ROUND(100 * SUM(rating < 3) / COUNT(*), 2) AS poor_query_percentage
-FROM Queries
-GROUP BY query_name;
+    p.product_id,
+    ROUND(
+        COALESCE(SUM(u.units * p.price) / SUM(u.units), 0),
+        2
+    ) AS average_price
+FROM Prices p
+LEFT JOIN UnitsSold u
+    ON p.product_id = u.product_id
+    AND u.purchase_date BETWEEN p.start_date AND p.end_date
+GROUP BY p.product_id;
