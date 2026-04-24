@@ -1,16 +1,12 @@
 /**
- * @param {number[]} nums
- * @return {boolean}
+ * @param {number} a
+ * @param {number} b
+ * @param {number} c
+ * @return {number}
  */
-var check = function (nums) {
-  let count = 0;
-  let n = nums.length;
+var maximumScore = function (a, b, c) {
+  let sum = a + b + c;
+  let max = Math.max(a, b, c);
 
-  for (let i = 0; i < n; i++) {
-    if (nums[i] > nums[(i + 1) % n]) {
-      count++;
-    }
-  }
-
-  return count <= 1;
+  return Math.min(sum - max, Math.floor(sum / 2));
 };
