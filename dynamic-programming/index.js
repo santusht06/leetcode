@@ -1,40 +1,16 @@
 /**
- * @param {number} x
- * @param {number} target
+ * @param {number[]} prices
+ * @param {number} fee
  * @return {number}
  */
-var leastOpsExpressTarget = function (x, target) {
-  let memo = new Map();
+var maxProfit = function (prices, fee) {
+  let cash = 0; // no stock
+  let hold = -prices[0]; // bought first stock
 
-  const dfs = (t) => {
-    if (memo.has(t)) return memo.get(t);
+  for (let i = 1; i < prices.length; i++) {
+    cash = Math.max(cash, hold + prices[i] - fee);
+    hold = Math.max(hold, cash - prices[i]);
+  }
 
-    // base case
-    if (t < x) {
-      return Math.min(t * 2 - 1, (x - t) * 2);
-    }
-
-    let k = Math.floor(Math.log(t) / Math.log(x));
-    let p = Math.pow(x, k);
-
-    if (t === p) {
-      memo.set(t, k);
-      return k;
-    }
-
-    // option 1
-    let res = dfs(t - p) + k;
-
-    // option 2 (ONLY if smaller)
-    let res2 = Infinity;
-    if (p * x - t < t) {
-      res2 = dfs(p * x - t) + k + 1;
-    }
-
-    let ans = Math.min(res, res2) + 1;
-    memo.set(t, ans);
-    return ans;
-  };
-
-  return dfs(target);
+  return cash;
 };
