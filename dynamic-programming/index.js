@@ -1,16 +1,40 @@
 /**
- * @param {number[]} prices
- * @param {number} fee
- * @return {number}
+ * @param {number[][]} grid
+ * @return {boolean}
  */
-var maxProfit = function (prices, fee) {
-  let cash = 0; // no stock
-  let hold = -prices[0]; // bought first stock
+var canPartitionGrid = function (grid) {
+  let m = grid.length;
+  let n = grid[0].length;
 
-  for (let i = 1; i < prices.length; i++) {
-    cash = Math.max(cash, hold + prices[i] - fee);
-    hold = Math.max(hold, cash - prices[i]);
+  let total = 0;
+
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      total += grid[i][j];
+    }
   }
 
-  return cash;
+  if (total % 2 !== 0) return false;
+
+  let target = total / 2;
+
+  // 🔹 Check horizontal cuts
+  let sum = 0;
+  for (let i = 0; i < m - 1; i++) {
+    for (let j = 0; j < n; j++) {
+      sum += grid[i][j];
+    }
+    if (sum === target) return true;
+  }
+
+  // 🔹 Check vertical cuts
+  sum = 0;
+  for (let j = 0; j < n - 1; j++) {
+    for (let i = 0; i < m; i++) {
+      sum += grid[i][j];
+    }
+    if (sum === target) return true;
+  }
+
+  return false;
 };
