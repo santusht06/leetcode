@@ -1,40 +1,49 @@
 /**
- * @param {number[][]} grid
- * @return {boolean}
+ * @param {TreeNode} root
+ * @param {number} start
+ * @return {number}
  */
-var canPartitionGrid = function (grid) {
-  let m = grid.length;
-  let n = grid[0].length;
+var amountOfTime = function (root, start) {
+  let graph = new Map();
 
-  let total = 0;
+  // 🔹 build graph
+  const build = (node, parent) => {
+    if (!node) return;
 
-  for (let i = 0; i < m; i++) {
-    for (let j = 0; j < n; j++) {
-      total += grid[i][j];
+    if (!graph.has(node.val)) graph.set(node.val, []);
+
+    if (parent) {
+      graph.get(node.val).push(parent.val);
+      graph.get(parent.val).push(node.val);
     }
+
+    build(node.left, node);
+    build(node.right, node);
+  };
+
+  build(root, null);
+
+  // 🔹 BFS
+  let queue = [start];
+  let visited = new Set([start]);
+  let time = -1;
+
+  while (queue.length) {
+    let size = queue.length;
+
+    for (let i = 0; i < size; i++) {
+      let node = queue.shift();
+
+      for (let nei of graph.get(node)) {
+        if (!visited.has(nei)) {
+          visited.add(nei);
+          queue.push(nei);
+        }
+      }
+    }
+
+    time++;
   }
 
-  if (total % 2 !== 0) return false;
-
-  let target = total / 2;
-
-  // 🔹 Check horizontal cuts
-  let sum = 0;
-  for (let i = 0; i < m - 1; i++) {
-    for (let j = 0; j < n; j++) {
-      sum += grid[i][j];
-    }
-    if (sum === target) return true;
-  }
-
-  // 🔹 Check vertical cuts
-  sum = 0;
-  for (let j = 0; j < n - 1; j++) {
-    for (let i = 0; i < m; i++) {
-      sum += grid[i][j];
-    }
-    if (sum === target) return true;
-  }
-
-  return false;
+  return time;
 };
