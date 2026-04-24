@@ -1,23 +1,16 @@
-var copyRandomList = function (head) {
-  if (!head) return null;
+/**
+ * @param {number[]} nums
+ * @return {boolean}
+ */
+var check = function (nums) {
+  let count = 0;
+  let n = nums.length;
 
-  let map = new Map();
-
-  // Step 1: create all nodes
-  let curr = head;
-  while (curr) {
-    map.set(curr, new _Node(curr.val, null, null));
-    curr = curr.next;
+  for (let i = 0; i < n; i++) {
+    if (nums[i] > nums[(i + 1) % n]) {
+      count++;
+    }
   }
 
-  // Step 2: assign next & random
-  curr = head;
-  while (curr) {
-    let copy = map.get(curr);
-    copy.next = curr.next ? map.get(curr.next) : null;
-    copy.random = curr.random ? map.get(curr.random) : null;
-    curr = curr.next;
-  }
-
-  return map.get(head);
+  return count <= 1;
 };
