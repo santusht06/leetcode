@@ -9,7 +9,7 @@ var leastOpsExpressTarget = function (x, target) {
   const dfs = (t) => {
     if (memo.has(t)) return memo.get(t);
 
-    // ✅ FIX: correct base case
+    // base case
     if (t < x) {
       return Math.min(t * 2 - 1, (x - t) * 2);
     }
@@ -22,11 +22,14 @@ var leastOpsExpressTarget = function (x, target) {
       return k;
     }
 
-    // option 1: use p
+    // option 1
     let res = dfs(t - p) + k;
 
-    // option 2: overshoot
-    let res2 = dfs(p * x - t) + k + 1;
+    // option 2 (ONLY if smaller)
+    let res2 = Infinity;
+    if (p * x - t < t) {
+      res2 = dfs(p * x - t) + k + 1;
+    }
 
     let ans = Math.min(res, res2) + 1;
     memo.set(t, ans);
