@@ -1,38 +1,28 @@
 /**
  * @param {number[]} nums
- * @param {number} k
+ * @param {number} value
  * @return {number}
  */
-var beautifulSubsets = function (nums, k) {
-  nums.sort((a, b) => a - b);
-
-  let count = 0;
+var findSmallestInteger = function (nums, value) {
   let freq = new Map();
 
-  const dfs = (i) => {
-    if (i === nums.length) {
-      count++;
-      return;
+  // normalize remainder (handle negative)
+  for (let num of nums) {
+    let r = ((num % value) + value) % value;
+    freq.set(r, (freq.get(r) || 0) + 1);
+  }
+
+  let i = 0;
+
+  while (true) {
+    let r = i % value;
+
+    if ((freq.get(r) || 0) > 0) {
+      freq.set(r, freq.get(r) - 1);
+    } else {
+      return i;
     }
 
-    // ❌ skip
-    dfs(i + 1);
-
-    let num = nums[i];
-
-    // ✅ pick (only if valid)
-    if (!freq.has(num - k)) {
-      freq.set(num, (freq.get(num) || 0) + 1);
-
-      dfs(i + 1);
-
-      // backtrack
-      freq.set(num, freq.get(num) - 1);
-      if (freq.get(num) === 0) freq.delete(num);
-    }
-  };
-
-  dfs(0);
-
-  return count - 1; // remove empty subset
+    i++;
+  }
 };
