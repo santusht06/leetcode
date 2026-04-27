@@ -1,29 +1,16 @@
 /**
  * @param {number[]} nums
- * @return {number}
+ * @param {number[]} moveFrom
+ * @param {number[]} moveTo
+ * @return {number[]}
  */
-var alternatingSubarray = function (nums) {
-  let n = nums.length;
-  let maxLen = -1;
+var relocateMarbles = function (nums, moveFrom, moveTo) {
+  let set = new Set(nums);
 
-  for (let i = 0; i < n - 1; i++) {
-    // must start with +1
-    if (nums[i + 1] !== nums[i] + 1) continue;
-
-    let len = 2;
-    let expectedDiff = -1;
-
-    for (let j = i + 2; j < n; j++) {
-      if (nums[j] - nums[j - 1] === expectedDiff) {
-        len++;
-        expectedDiff *= -1; // flip between +1 and -1
-      } else {
-        break;
-      }
-    }
-
-    maxLen = Math.max(maxLen, len);
+  for (let i = 0; i < moveFrom.length; i++) {
+    set.delete(moveFrom[i]); // remove old position
+    set.add(moveTo[i]); // add new position
   }
 
-  return maxLen;
+  return Array.from(set).sort((a, b) => a - b);
 };
