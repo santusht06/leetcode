@@ -1,14 +1,26 @@
-var minDeletion = function (nums) {
-  let deletions = 0;
+/**
+ * @param {number[]} arr
+ * @return {number}
+ */
+var subarrayBitwiseORs = function (arr) {
+  let result = new Set();
+  let prev = new Set();
 
-  for (let i = 0; i < nums.length - 1; i++) {
-    if ((i - deletions) % 2 === 0 && nums[i] === nums[i + 1]) {
-      deletions++;
+  for (let num of arr) {
+    let curr = new Set();
+
+    curr.add(num);
+
+    for (let val of prev) {
+      curr.add(val | num);
+    }
+
+    prev = curr;
+
+    for (let val of curr) {
+      result.add(val);
     }
   }
 
-  // ensure even length
-  if ((nums.length - deletions) % 2 === 1) deletions++;
-
-  return deletions;
+  return result.size;
 };
