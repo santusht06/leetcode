@@ -1,33 +1,21 @@
 /**
- * @param {number[][]} intervals
- * @param {number[]} newInterval
- * @return {number[][]}
+ * @param {number[]} stones
+ * @return {boolean}
  */
-var insert = function (intervals, newInterval) {
-  let result = [];
-  let i = 0;
-  let n = intervals.length;
+var stoneGameIX = function (stones) {
+  let count = [0, 0, 0];
 
-  // 1️⃣ before overlap
-  while (i < n && intervals[i][1] < newInterval[0]) {
-    result.push(intervals[i]);
-    i++;
+  for (let s of stones) {
+    count[s % 3]++;
   }
 
-  // 2️⃣ merge overlap
-  while (i < n && intervals[i][0] <= newInterval[1]) {
-    newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
-    newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
-    i++;
+  let c0 = count[0];
+  let c1 = count[1];
+  let c2 = count[2];
+
+  if (c0 % 2 === 0) {
+    return c1 > 0 && c2 > 0;
+  } else {
+    return Math.abs(c1 - c2) > 2;
   }
-
-  result.push(newInterval);
-
-  // 3️⃣ after overlap
-  while (i < n) {
-    result.push(intervals[i]);
-    i++;
-  }
-
-  return result;
 };
