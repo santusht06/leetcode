@@ -1,26 +1,29 @@
 /**
- * @param {number[]} arr
+ * @param {number[]} nums
  * @return {number}
  */
-var subarrayBitwiseORs = function (arr) {
-  let result = new Set();
-  let prev = new Set();
+var alternatingSubarray = function (nums) {
+  let n = nums.length;
+  let maxLen = -1;
 
-  for (let num of arr) {
-    let curr = new Set();
+  for (let i = 0; i < n - 1; i++) {
+    // must start with +1
+    if (nums[i + 1] !== nums[i] + 1) continue;
 
-    curr.add(num);
+    let len = 2;
+    let expectedDiff = -1;
 
-    for (let val of prev) {
-      curr.add(val | num);
+    for (let j = i + 2; j < n; j++) {
+      if (nums[j] - nums[j - 1] === expectedDiff) {
+        len++;
+        expectedDiff *= -1; // flip between +1 and -1
+      } else {
+        break;
+      }
     }
 
-    prev = curr;
-
-    for (let val of curr) {
-      result.add(val);
-    }
+    maxLen = Math.max(maxLen, len);
   }
 
-  return result.size;
+  return maxLen;
 };
