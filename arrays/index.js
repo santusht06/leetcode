@@ -1,28 +1,35 @@
 /**
  * @param {number[]} nums
- * @param {number} value
  * @return {number}
  */
-var findSmallestInteger = function (nums, value) {
-  let freq = new Map();
+var findShortestSubArray = function (nums) {
+  let count = new Map();
+  let first = new Map();
+  let last = new Map();
 
-  // normalize remainder (handle negative)
-  for (let num of nums) {
-    let r = ((num % value) + value) % value;
-    freq.set(r, (freq.get(r) || 0) + 1);
+  for (let i = 0; i < nums.length; i++) {
+    let x = nums[i];
+
+    if (!first.has(x)) first.set(x, i);
+    last.set(x, i);
+
+    count.set(x, (count.get(x) || 0) + 1);
   }
 
-  let i = 0;
+  // find degree
+  let degree = 0;
+  for (let v of count.values()) {
+    degree = Math.max(degree, v);
+  }
 
-  while (true) {
-    let r = i % value;
-
-    if ((freq.get(r) || 0) > 0) {
-      freq.set(r, freq.get(r) - 1);
-    } else {
-      return i;
+  // find minimum length
+  let ans = Infinity;
+  for (let [num, freq] of count.entries()) {
+    if (freq === degree) {
+      let len = last.get(num) - first.get(num) + 1;
+      ans = Math.min(ans, len);
     }
-
-    i++;
   }
+
+  return ans;
 };
