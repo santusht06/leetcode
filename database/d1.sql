@@ -1,5 +1,4 @@
-SELECT e.name, b.bonus
-FROM Employee e
-LEFT JOIN Bonus b
-ON e.empId = b.empId
-WHERE b.bonus < 1000 OR b.bonus IS NULL;
+SELECT user_id, email
+FROM Users
+WHERE email REGEXP '^[a-zA-Z0-9_]+@[a-zA-Z]+\\.com$'
+ORDER BY user_id;
