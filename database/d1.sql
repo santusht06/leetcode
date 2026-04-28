@@ -1,33 +1,37 @@
-WITH user_categories AS (
-    -- Step 1: get unique categories per user
-    SELECT DISTINCT 
-        p.user_id,
-        i.category
-    FROM ProductPurchases p
-    JOIN ProductInfo i 
-        ON p.product_id = i.product_id
+WITH seasonal_sales AS (
+    SELECT 
+        CASE 
+            WHEN MONTH(s.sale_date) IN (12,1,2) THEN 'Winter'
+            WHEN MONTH(s.sale_date) IN (3,4,5) THEN 'Spring'
+            WHEN MONTH(s.sale_date) IN (6,7,8) THEN 'Summer'
+            ELSE 'Fall'
+        END AS season,
+        p.category,
+        SUM(s.quantity) AS total_quantity,
+        SUM(s.quantity * s.price) AS total_revenue
+    FROM sales s
+    JOIN products p 
+        ON s.product_id = p.product_id
+    GROUP BY season, p.category
 ),
 
-pairs AS (
-    -- Step 2: generate category pairs per user
-    SELECT 
-        uc1.user_id,
-        uc1.category AS category1,
-        uc2.category AS category2
-    FROM user_categories uc1
-    JOIN user_categories uc2
-        ON uc1.user_id = uc2.user_id
-        AND uc1.category < uc2.category
+ranked AS (
+    SELECT *,
+        ROW_NUMBER() OVER (
+            PARTITION BY season
+            ORDER BY 
+                total_quantity DESC,
+                total_revenue DESC,
+                category ASC
+        ) AS rn
+    FROM seasonal_sales
 )
 
 SELECT 
-    category1,
-    category2,
-    COUNT(DISTINCT user_id) AS customer_count
-FROM pairs
-GROUP BY category1, category2
-HAVING COUNT(DISTINCT user_id) >= 3
-ORDER BY 
-    customer_count DESC,
-    category1 ASC,
-    category2 ASC;
+    season,
+    category,
+    total_quantity,
+    total_revenue
+FROM ranked
+WHERE rn = 1
+ORDER BY season;
