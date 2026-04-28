@@ -1,11 +1,26 @@
 SELECT 
-    user_id,
-    ROUND(AVG(CASE WHEN activity_type = 'free_trial' THEN activity_duration END), 2) AS trial_avg_duration,
-    ROUND(AVG(CASE WHEN activity_type = 'paid' THEN activity_duration END), 2) AS paid_avg_duration
-FROM UserActivity
-GROUP BY user_id
-HAVING 
-    SUM(activity_type = 'free_trial') > 0
-    AND
-    SUM(activity_type = 'paid') > 0
-ORDER BY user_id;
+    p1.product_id AS product1_id,
+    p2.product_id AS product2_id,
+    i1.category AS product1_category,
+    i2.category AS product2_category,
+    COUNT(DISTINCT p1.user_id) AS customer_count
+
+FROM ProductPurchases p1
+JOIN ProductPurchases p2 
+    ON p1.user_id = p2.user_id 
+    AND p1.product_id < p2.product_id
+
+JOIN ProductInfo i1 
+    ON p1.product_id = i1.product_id
+
+JOIN ProductInfo i2 
+    ON p2.product_id = i2.product_id
+
+GROUP BY p1.product_id, p2.product_id, i1.category, i2.category
+
+HAVING COUNT(DISTINCT p1.user_id) >= 3
+
+ORDER BY 
+    customer_count DESC,
+    product1_id ASC,
+    product2_id ASC;
