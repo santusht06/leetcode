@@ -1,23 +1,31 @@
-var maxSumDistinctTriplet = function (x, y) {
-  const map = new Map();
+var maximumProfit = function (prices, k) {
+  const n = prices.length;
 
-  // Step 1: store max y for each x
-  for (let i = 0; i < x.length; i++) {
-    if (!map.has(x[i])) {
-      map.set(x[i], y[i]);
-    } else {
-      map.set(x[i], Math.max(map.get(x[i]), y[i]));
+  // Unlimited transactions case
+  if (k >= n / 2) {
+    let profit = 0;
+    for (let i = 1; i < n; i++) {
+      profit += Math.abs(prices[i] - prices[i - 1]);
+    }
+    return profit;
+  }
+
+  const buy = Array(k + 1).fill(-Infinity);
+  const sell = Array(k + 1).fill(0);
+  const short = Array(k + 1).fill(-Infinity);
+  const cover = Array(k + 1).fill(0);
+
+  for (let price of prices) {
+    for (let t = 1; t <= k; t++) {
+      // Normal transaction
+      buy[t] = Math.max(buy[t], sell[t - 1] - price);
+      sell[t] = Math.max(sell[t], buy[t] + price);
+
+      // Short transaction
+      short[t] = Math.max(short[t], cover[t - 1] + price);
+      cover[t] = Math.max(cover[t], short[t] - price);
     }
   }
 
-  // Step 2: get all values
-  const values = Array.from(map.values());
-
-  // Step 3: need at least 3 distinct x
-  if (values.length < 3) return -1;
-
-  // Step 4: find top 3 largest values
-  values.sort((a, b) => b - a);
-
-  return values[0] + values[1] + values[2];
+  return Math.max(sell[k], cover[k]);
 };
