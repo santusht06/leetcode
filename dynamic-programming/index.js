@@ -1,59 +1,81 @@
-var countIslands = function (grid, k) {
-  const m = grid.length;
-  const n = grid[0].length;
+var findMaxPathScore = function (edges, online, k) {
+  const n = online.length;
 
-  let visited = Array.from({ length: m }, () => Array(n).fill(false));
+  // build adjacency list
+  let adj = Array.from({ length: n }, () => []);
+  for (let [u, v, w] of edges) {
+    adj[u].push([v, w]);
+  }
 
-  const directions = [
-    [1, 0],
-    [-1, 0],
-    [0, 1],
-    [0, -1],
-  ];
+  // topological sort
+  function topoSort() {
+    let indegree = new Array(n).fill(0);
 
-  function dfs(r, c) {
-    let stack = [[r, c]];
-    visited[r][c] = true;
-    let sum = 0;
+    for (let u = 0; u < n; u++) {
+      for (let [v] of adj[u]) {
+        indegree[v]++;
+      }
+    }
 
-    while (stack.length) {
-      let [x, y] = stack.pop();
-      sum += grid[x][y];
+    let queue = [];
+    for (let i = 0; i < n; i++) {
+      if (indegree[i] === 0) queue.push(i);
+    }
 
-      for (let [dx, dy] of directions) {
-        let nx = x + dx;
-        let ny = y + dy;
+    let topo = [];
+    while (queue.length) {
+      let u = queue.shift();
+      topo.push(u);
 
-        if (
-          nx >= 0 &&
-          ny >= 0 &&
-          nx < m &&
-          ny < n &&
-          grid[nx][ny] > 0 &&
-          !visited[nx][ny]
-        ) {
-          visited[nx][ny] = true;
-          stack.push([nx, ny]);
+      for (let [v] of adj[u]) {
+        if (--indegree[v] === 0) {
+          queue.push(v);
         }
       }
     }
 
-    return sum;
+    return topo;
   }
 
-  let count = 0;
+  const topo = topoSort();
 
-  for (let i = 0; i < m; i++) {
-    for (let j = 0; j < n; j++) {
-      if (grid[i][j] > 0 && !visited[i][j]) {
-        let islandSum = dfs(i, j);
+  function can(minEdge) {
+    let dist = new Array(n).fill(Infinity);
+    dist[0] = 0;
 
-        if (islandSum % k === 0) {
-          count++;
-        }
+    for (let u of topo) {
+      if (dist[u] === Infinity) continue;
+
+      // skip offline nodes (except start)
+      if (u !== 0 && u !== n - 1 && !online[u]) continue;
+
+      for (let [v, w] of adj[u]) {
+        if (w < minEdge) continue;
+
+        if (v !== n - 1 && !online[v]) continue;
+
+        dist[v] = Math.min(dist[v], dist[u] + w);
       }
+    }
+
+    return dist[n - 1] <= k;
+  }
+
+  // binary search
+  let left = 0,
+    right = 1e9;
+  let ans = -1;
+
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2);
+
+    if (can(mid)) {
+      ans = mid;
+      left = mid + 1; // try bigger
+    } else {
+      right = mid - 1;
     }
   }
 
-  return count;
+  return ans;
 };
