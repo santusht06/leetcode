@@ -1,63 +1,23 @@
-var countPairs = function (nums, low, high) {
-  class TrieNode {
-    constructor() {
-      this.children = [null, null];
-      this.count = 0;
+var maxSumDistinctTriplet = function (x, y) {
+  const map = new Map();
+
+  // Step 1: store max y for each x
+  for (let i = 0; i < x.length; i++) {
+    if (!map.has(x[i])) {
+      map.set(x[i], y[i]);
+    } else {
+      map.set(x[i], Math.max(map.get(x[i]), y[i]));
     }
   }
 
-  class Trie {
-    constructor() {
-      this.root = new TrieNode();
-    }
+  // Step 2: get all values
+  const values = Array.from(map.values());
 
-    insert(num) {
-      let node = this.root;
-      for (let i = 14; i >= 0; i--) {
-        let bit = (num >> i) & 1;
-        if (!node.children[bit]) {
-          node.children[bit] = new TrieNode();
-        }
-        node = node.children[bit];
-        node.count++;
-      }
-    }
+  // Step 3: need at least 3 distinct x
+  if (values.length < 3) return -1;
 
-    countLessThan(num, limit) {
-      let node = this.root;
-      let res = 0;
+  // Step 4: find top 3 largest values
+  values.sort((a, b) => b - a);
 
-      for (let i = 14; i >= 0; i--) {
-        if (!node) break;
-
-        let bit = (num >> i) & 1;
-        let limBit = (limit >> i) & 1;
-
-        if (limBit === 1) {
-          if (node.children[bit]) {
-            res += node.children[bit].count;
-          }
-          node = node.children[bit ^ 1];
-        } else {
-          node = node.children[bit];
-        }
-      }
-
-      return res;
-    }
-  }
-
-  const solve = (limit) => {
-    let trie = new Trie();
-    let count = 0;
-
-    for (let num of nums) {
-      count += trie.countLessThan(num, limit);
-      trie.insert(num);
-    }
-
-    return count;
-  };
-
-  return solve(high + 1) - solve(low);
+  return values[0] + values[1] + values[2];
 };
