@@ -1,31 +1,42 @@
-var maximumProfit = function (prices, k) {
-  const n = prices.length;
+var maxGCDScore = function (nums, k) {
+  const n = nums.length;
+  let ans = 0;
 
-  // Unlimited transactions case
-  if (k >= n / 2) {
-    let profit = 0;
-    for (let i = 1; i < n; i++) {
-      profit += Math.abs(prices[i] - prices[i - 1]);
+  for (let i = 0; i < n; i++) {
+    let g = 0;
+
+    // Map to count how many numbers match condition
+    let cnt = new Map();
+
+    for (let j = i; j < n; j++) {
+      g = gcd(g, nums[j]);
+
+      // Count elements divisible by g but not 2g
+      let c = 0;
+      for (let t = i; t <= j; t++) {
+        if (nums[t] % g === 0 && nums[t] % (2 * g) !== 0) {
+          c++;
+        }
+      }
+
+      let length = j - i + 1;
+
+      // Without doubling
+      ans = Math.max(ans, length * g);
+
+      // With doubling
+      if (c <= k) {
+        ans = Math.max(ans, length * g * 2);
+      }
     }
-    return profit;
   }
 
-  const buy = Array(k + 1).fill(-Infinity);
-  const sell = Array(k + 1).fill(0);
-  const short = Array(k + 1).fill(-Infinity);
-  const cover = Array(k + 1).fill(0);
+  return ans;
 
-  for (let price of prices) {
-    for (let t = 1; t <= k; t++) {
-      // Normal transaction
-      buy[t] = Math.max(buy[t], sell[t - 1] - price);
-      sell[t] = Math.max(sell[t], buy[t] + price);
-
-      // Short transaction
-      short[t] = Math.max(short[t], cover[t - 1] + price);
-      cover[t] = Math.max(cover[t], short[t] - price);
+  function gcd(a, b) {
+    while (b !== 0) {
+      [a, b] = [b, a % b];
     }
+    return a;
   }
-
-  return Math.max(sell[k], cover[k]);
 };
