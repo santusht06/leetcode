@@ -1,31 +1,36 @@
 var countTrapezoids = function (points) {
-  const MOD = 1e9 + 7;
+  const MOD = 1000000007n;
 
-  // Step 1: group by y
   let map = new Map();
 
+  // group by y
   for (let [x, y] of points) {
-    map.set(y, (map.get(y) || 0) + 1);
+    map.set(y, (map.get(y) || 0n) + 1n);
   }
 
-  // Step 2: compute C(n,2)
   let ways = [];
+
+  // compute C(n,2) safely
   for (let count of map.values()) {
-    if (count >= 2) {
-      ways.push((count * (count - 1)) / 2);
+    if (count >= 2n) {
+      ways.push((count * (count - 1n)) / 2n);
     }
   }
 
-  // Step 3: sum trick
-  let total = 0;
+  // total sum
+  let total = 0n;
   for (let w of ways) {
-    total += w;
+    total = (total + w) % MOD;
   }
 
-  let ans = 0;
+  // final answer
+  let ans = 0n;
   for (let w of ways) {
-    ans += w * (total - w);
+    ans = (ans + w * (total - w)) % MOD;
   }
 
-  return Math.floor(ans / 2) % MOD;
+  // divide by 2 (modular inverse of 2)
+  ans = (ans * 500000004n) % MOD;
+
+  return Number(ans);
 };
