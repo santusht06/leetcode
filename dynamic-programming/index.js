@@ -40,3 +40,5 @@ var maxGCDScore = function (nums, k) {
     return a;
   }
 };
+
+// DAY 14 SKIPPED"
