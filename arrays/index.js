@@ -1,22 +1,42 @@
-var decodeMessage = function (key, message) {
-  let map = {};
-  let curr = "a";
+var numSmallerByFrequency = function (queries, words) {
+  function f(s) {
+    let minChar = "z";
+    let count = 0;
 
-  for (let ch of key) {
-    if (ch !== " " && map[ch] === undefined) {
-      map[ch] = curr;
-      curr = String.fromCharCode(curr.charCodeAt(0) + 1);
+    for (let ch of s) {
+      if (ch < minChar) {
+        minChar = ch;
+        count = 1;
+      } else if (ch === minChar) {
+        count++;
+      }
     }
+
+    return count;
   }
 
-  let result = "";
+  let freqWords = words.map(f).sort((a, b) => a - b);
 
-  for (let ch of message) {
-    if (ch === " ") {
-      result += " ";
-    } else {
-      result += map[ch];
+  function upperBound(arr, target) {
+    let left = 0,
+      right = arr.length;
+
+    while (left < right) {
+      let mid = Math.floor((left + right) / 2);
+      if (arr[mid] <= target) left = mid + 1;
+      else right = mid;
     }
+
+    return left;
+  }
+
+  let result = [];
+
+  for (let q of queries) {
+    let fq = f(q);
+    let idx = upperBound(freqWords, fq);
+
+    result.push(freqWords.length - idx);
   }
 
   return result;
