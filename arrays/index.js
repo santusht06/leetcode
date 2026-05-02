@@ -1,22 +1,24 @@
-var sortVowels = function (s) {
-  let arr = s.split("");
+var binaryTreePaths = function (root) {
+  let result = [];
 
-  const vowels = new Set(["a", "e", "i", "o", "u", "A", "E", "I", "O", "U"]);
+  function dfs(node, path) {
+    if (!node) return;
 
-  // extract vowels
-  let extracted = arr.filter((ch) => vowels.has(ch)).sort();
+    // add current node to path
+    path += node.val;
 
-  let j = 0;
-
-  // put back sorted vowels
-  for (let i = 0; i < arr.length; i++) {
-    if (vowels.has(arr[i])) {
-      arr[i] = extracted[j++];
+    // if leaf → store result
+    if (!node.left && !node.right) {
+      result.push(path);
+      return;
     }
+
+    // continue DFS
+    path += "->";
+    dfs(node.left, path);
+    dfs(node.right, path);
   }
 
-  return arr.join("");
+  dfs(root, "");
+  return result;
 };
-
-let s = "leetcode";
-console.log(sortVowels(s));
