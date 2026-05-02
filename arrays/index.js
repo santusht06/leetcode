@@ -1,21 +1,39 @@
-var numSteps = function (s) {
-  let steps = 0;
-  let carry = 0;
+var longestDiverseString = function (a, b, c) {
+  let result = [];
 
-  // traverse from right to left (skip first bit)
-  for (let i = s.length - 1; i > 0; i--) {
-    let bit = Number(s[i]) + carry;
+  let arr = [
+    ["a", a],
+    ["b", b],
+    ["c", c],
+  ];
 
-    if (bit === 1) {
-      // odd → +1 then /2
-      steps += 2;
-      carry = 1;
-    } else {
-      // even → just /2
-      steps += 1;
+  while (true) {
+    // sort by remaining count (descending)
+    arr.sort((x, y) => y[1] - x[1]);
+
+    let added = false;
+
+    for (let i = 0; i < 3; i++) {
+      let [ch, count] = arr[i];
+
+      if (count === 0) continue;
+
+      let n = result.length;
+
+      // check last 2 chars
+      if (n >= 2 && result[n - 1] === ch && result[n - 2] === ch) {
+        continue;
+      }
+
+      // use this character
+      result.push(ch);
+      arr[i][1]--;
+      added = true;
+      break;
     }
+
+    if (!added) break;
   }
 
-  // if carry remains at MSB
-  return steps + carry;
+  return result.join("");
 };
