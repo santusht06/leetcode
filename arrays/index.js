@@ -1,26 +1,27 @@
-var getHappyString = function (n, k) {
-  let result = "";
-  let count = 0;
+var numberOfArrays = function (s, k) {
+  const MOD = 1e9 + 7;
+  let n = s.length;
 
-  function dfs(curr) {
-    if (curr.length === n) {
-      count++;
-      if (count === k) {
-        result = curr;
-        return true; // stop further recursion
-      }
-      return false;
+  let memo = new Array(n).fill(-1);
+
+  function dfs(i) {
+    if (i === n) return 1;
+    if (s[i] === "0") return 0; // no leading zero
+    if (memo[i] !== -1) return memo[i];
+
+    let num = 0;
+    let ways = 0;
+
+    for (let j = i; j < n; j++) {
+      num = num * 10 + (s[j] - "0");
+
+      if (num > k) break;
+
+      ways = (ways + dfs(j + 1)) % MOD;
     }
 
-    for (let ch of ["a", "b", "c"]) {
-      if (curr.length > 0 && curr[curr.length - 1] === ch) continue;
-
-      if (dfs(curr + ch)) return true;
-    }
-
-    return false;
+    return (memo[i] = ways);
   }
 
-  dfs("");
-  return result;
+  return dfs(0);
 };
