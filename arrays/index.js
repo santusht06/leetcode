@@ -1,12 +1,39 @@
-var stringMatching = function (words) {
-  let result = [];
+var entityParser = function (text) {
+  const map = {
+    "&quot;": '"',
+    "&apos;": "'",
+    "&amp;": "&",
+    "&gt;": ">",
+    "&lt;": "<",
+    "&frasl;": "/",
+  };
 
-  for (let i = 0; i < words.length; i++) {
-    for (let j = 0; j < words.length; j++) {
-      if (i !== j && words[j].includes(words[i])) {
-        result.push(words[i]);
-        break;
+  let result = "";
+  let i = 0;
+
+  while (i < text.length) {
+    if (text[i] === "&") {
+      let found = false;
+
+      // max entity length is 7 ("&frasl;")
+      for (let j = i; j < Math.min(i + 7, text.length); j++) {
+        let substr = text.slice(i, j + 1);
+
+        if (map[substr]) {
+          result += map[substr];
+          i = j + 1;
+          found = true;
+          break;
+        }
       }
+
+      if (!found) {
+        result += text[i];
+        i++;
+      }
+    } else {
+      result += text[i];
+      i++;
     }
   }
 
