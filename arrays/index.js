@@ -1,26 +1,43 @@
-var canMakePaliQueries = function (s, queries) {
-  let n = s.length;
-  let prefix = new Array(n + 1).fill(0);
+var findNumOfValidWords = function (words, puzzles) {
+  function getMask(word) {
+    let mask = 0;
+    for (let ch of new Set(word)) {
+      mask |= 1 << (ch.charCodeAt(0) - 97);
+    }
+    return mask;
+  }
 
-  // build prefix bitmask
-  for (let i = 0; i < n; i++) {
-    let bit = 1 << (s[i].charCodeAt(0) - 97);
-    prefix[i + 1] = prefix[i] ^ bit;
+  let freq = new Map();
+
+  for (let word of words) {
+    let mask = getMask(word);
+    if (mask.toString(2).split("1").length - 1 <= 7) {
+      freq.set(mask, (freq.get(mask) || 0) + 1);
+    }
   }
 
   let result = [];
 
-  for (let [l, r, k] of queries) {
-    let mask = prefix[r + 1] ^ prefix[l];
+  for (let puzzle of puzzles) {
+    let first = 1 << (puzzle[0].charCodeAt(0) - 97);
 
-    // count number of 1s (odd chars)
-    let odd = 0;
-    while (mask) {
-      mask &= mask - 1; // remove lowest set bit
-      odd++;
+    let mask = 0;
+    for (let ch of puzzle) {
+      mask |= 1 << (ch.charCodeAt(0) - 97);
     }
 
-    result.push(Math.floor(odd / 2) <= k);
+    let sub = mask;
+    let count = 0;
+
+    while (sub) {
+      // must include first letter
+      if ((sub & first) !== 0 && freq.has(sub)) {
+        count += freq.get(sub);
+      }
+      sub = (sub - 1) & mask;
+    }
+
+    result.push(count);
   }
 
   return result;
