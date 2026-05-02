@@ -1,41 +1,26 @@
-var entityParser = function (text) {
-  const map = {
-    "&quot;": '"',
-    "&apos;": "'",
-    "&amp;": "&",
-    "&gt;": ">",
-    "&lt;": "<",
-    "&frasl;": "/",
-  };
-
+var getHappyString = function (n, k) {
   let result = "";
-  let i = 0;
+  let count = 0;
 
-  while (i < text.length) {
-    if (text[i] === "&") {
-      let found = false;
-
-      // max entity length is 7 ("&frasl;")
-      for (let j = i; j < Math.min(i + 7, text.length); j++) {
-        let substr = text.slice(i, j + 1);
-
-        if (map[substr]) {
-          result += map[substr];
-          i = j + 1;
-          found = true;
-          break;
-        }
+  function dfs(curr) {
+    if (curr.length === n) {
+      count++;
+      if (count === k) {
+        result = curr;
+        return true; // stop further recursion
       }
-
-      if (!found) {
-        result += text[i];
-        i++;
-      }
-    } else {
-      result += text[i];
-      i++;
+      return false;
     }
+
+    for (let ch of ["a", "b", "c"]) {
+      if (curr.length > 0 && curr[curr.length - 1] === ch) continue;
+
+      if (dfs(curr + ch)) return true;
+    }
+
+    return false;
   }
 
+  dfs("");
   return result;
 };
