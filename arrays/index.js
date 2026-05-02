@@ -1,24 +1,14 @@
-var binaryTreePaths = function (root) {
-  let result = [];
+var countAsterisks = function (s) {
+  let count = 0;
+  let inside = false;
 
-  function dfs(node, path) {
-    if (!node) return;
-
-    // add current node to path
-    path += node.val;
-
-    // if leaf → store result
-    if (!node.left && !node.right) {
-      result.push(path);
-      return;
+  for (let ch of s) {
+    if (ch === "|") {
+      inside = !inside; // toggle state
+    } else if (ch === "*" && !inside) {
+      count++;
     }
-
-    // continue DFS
-    path += "->";
-    dfs(node.left, path);
-    dfs(node.right, path);
   }
 
-  dfs(root, "");
-  return result;
+  return count;
 };
