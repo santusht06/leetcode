@@ -1,35 +1,22 @@
-/**
- * @param {number[]} nums
- * @return {number}
- */
-var findShortestSubArray = function (nums) {
-  let count = new Map();
-  let first = new Map();
-  let last = new Map();
+var sortVowels = function (s) {
+  let arr = s.split("");
 
-  for (let i = 0; i < nums.length; i++) {
-    let x = nums[i];
+  const vowels = new Set(["a", "e", "i", "o", "u", "A", "E", "I", "O", "U"]);
 
-    if (!first.has(x)) first.set(x, i);
-    last.set(x, i);
+  // extract vowels
+  let extracted = arr.filter((ch) => vowels.has(ch)).sort();
 
-    count.set(x, (count.get(x) || 0) + 1);
-  }
+  let j = 0;
 
-  // find degree
-  let degree = 0;
-  for (let v of count.values()) {
-    degree = Math.max(degree, v);
-  }
-
-  // find minimum length
-  let ans = Infinity;
-  for (let [num, freq] of count.entries()) {
-    if (freq === degree) {
-      let len = last.get(num) - first.get(num) + 1;
-      ans = Math.min(ans, len);
+  // put back sorted vowels
+  for (let i = 0; i < arr.length; i++) {
+    if (vowels.has(arr[i])) {
+      arr[i] = extracted[j++];
     }
   }
 
-  return ans;
+  return arr.join("");
 };
+
+let s = "leetcode";
+console.log(sortVowels(s));
