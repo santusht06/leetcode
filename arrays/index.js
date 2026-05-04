@@ -1,40 +1,18 @@
-var findTheString = function (lcp) {
-  const n = lcp.length;
-  const res = new Array(n).fill("");
+var divisibilityArray = function (word, m) {
+  const n = word.length;
+  const result = new Array(n).fill(0);
 
-  let charCode = "a".charCodeAt(0);
+  let rem = 0;
 
-  // Phase 1: Assign characters
   for (let i = 0; i < n; i++) {
-    if (res[i] !== "") continue;
+    const digit = word[i] - "0";
 
-    if (charCode > "z".charCodeAt(0)) return "";
+    rem = (rem * 10 + digit) % m;
 
-    const ch = String.fromCharCode(charCode++);
-
-    for (let j = i; j < n; j++) {
-      if (lcp[i][j] > 0) {
-        res[j] = ch;
-      }
+    if (rem === 0) {
+      result[i] = 1;
     }
   }
 
-  const word = res.join("");
-
-  // Phase 2: Validate using DP
-  const dp = Array.from({ length: n + 1 }, () => Array(n + 1).fill(0));
-
-  for (let i = n - 1; i >= 0; i--) {
-    for (let j = n - 1; j >= 0; j--) {
-      if (word[i] === word[j]) {
-        dp[i][j] = 1 + dp[i + 1][j + 1];
-      } else {
-        dp[i][j] = 0;
-      }
-
-      if (dp[i][j] !== lcp[i][j]) return "";
-    }
-  }
-
-  return word;
+  return result;
 };
