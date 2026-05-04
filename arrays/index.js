@@ -1,46 +1,40 @@
-var palindromePairs = function (words) {
-  const map = new Map();
+var findTheString = function (lcp) {
+  const n = lcp.length;
+  const res = new Array(n).fill("");
 
-  // Step 1: store reversed words
-  for (let i = 0; i < words.length; i++) {
-    map.set(words[i], i);
-  }
+  let charCode = "a".charCodeAt(0);
 
-  const result = [];
+  // Phase 1: Assign characters
+  for (let i = 0; i < n; i++) {
+    if (res[i] !== "") continue;
 
-  function isPalindrome(str, left, right) {
-    while (left < right) {
-      if (str[left++] !== str[right--]) return false;
-    }
-    return true;
-  }
+    if (charCode > "z".charCodeAt(0)) return "";
 
-  for (let i = 0; i < words.length; i++) {
-    const word = words[i];
-    const len = word.length;
+    const ch = String.fromCharCode(charCode++);
 
-    for (let j = 0; j <= len; j++) {
-      const prefix = word.substring(0, j);
-      const suffix = word.substring(j);
-
-      // Case 1: prefix palindrome
-      if (isPalindrome(word, 0, j - 1)) {
-        const revSuffix = suffix.split("").reverse().join("");
-        if (map.has(revSuffix) && map.get(revSuffix) !== i) {
-          result.push([map.get(revSuffix), i]);
-        }
-      }
-
-      // Case 2: suffix palindrome
-      // j != len to avoid duplicates
-      if (j !== len && isPalindrome(word, j, len - 1)) {
-        const revPrefix = prefix.split("").reverse().join("");
-        if (map.has(revPrefix) && map.get(revPrefix) !== i) {
-          result.push([i, map.get(revPrefix)]);
-        }
+    for (let j = i; j < n; j++) {
+      if (lcp[i][j] > 0) {
+        res[j] = ch;
       }
     }
   }
 
-  return result;
+  const word = res.join("");
+
+  // Phase 2: Validate using DP
+  const dp = Array.from({ length: n + 1 }, () => Array(n + 1).fill(0));
+
+  for (let i = n - 1; i >= 0; i--) {
+    for (let j = n - 1; j >= 0; j--) {
+      if (word[i] === word[j]) {
+        dp[i][j] = 1 + dp[i + 1][j + 1];
+      } else {
+        dp[i][j] = 0;
+      }
+
+      if (dp[i][j] !== lcp[i][j]) return "";
+    }
+  }
+
+  return word;
 };
