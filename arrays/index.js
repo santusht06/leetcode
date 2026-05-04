@@ -1,33 +1,46 @@
-var findItinerary = function (tickets) {
-  const graph = new Map();
+var palindromePairs = function (words) {
+  const map = new Map();
 
-  // Step 1: Build graph
-  for (let [from, to] of tickets) {
-    if (!graph.has(from)) graph.set(from, []);
-    graph.get(from).push(to);
-  }
-
-  // Step 2: Sort destinations in reverse lex order
-  for (let [key, list] of graph) {
-    list.sort().reverse();
+  // Step 1: store reversed words
+  for (let i = 0; i < words.length; i++) {
+    map.set(words[i], i);
   }
 
   const result = [];
 
-  // Step 3: DFS (Hierholzer)
-  function dfs(node) {
-    const dests = graph.get(node) || [];
-
-    while (dests.length > 0) {
-      const next = dests.pop(); // smallest lex
-      dfs(next);
+  function isPalindrome(str, left, right) {
+    while (left < right) {
+      if (str[left++] !== str[right--]) return false;
     }
-
-    result.push(node);
+    return true;
   }
 
-  dfs("JFK");
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    const len = word.length;
 
-  // Step 4: Reverse result
-  return result.reverse();
+    for (let j = 0; j <= len; j++) {
+      const prefix = word.substring(0, j);
+      const suffix = word.substring(j);
+
+      // Case 1: prefix palindrome
+      if (isPalindrome(word, 0, j - 1)) {
+        const revSuffix = suffix.split("").reverse().join("");
+        if (map.has(revSuffix) && map.get(revSuffix) !== i) {
+          result.push([map.get(revSuffix), i]);
+        }
+      }
+
+      // Case 2: suffix palindrome
+      // j != len to avoid duplicates
+      if (j !== len && isPalindrome(word, j, len - 1)) {
+        const revPrefix = prefix.split("").reverse().join("");
+        if (map.has(revPrefix) && map.get(revPrefix) !== i) {
+          result.push([i, map.get(revPrefix)]);
+        }
+      }
+    }
+  }
+
+  return result;
 };
