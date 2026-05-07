@@ -1,23 +1,31 @@
 /**
- * @param {number[]} arr
- * @param {number} k
+ * @param {number[]} nums
+ * @param {number} target
  * @return {number}
  */
-var findKthPositive = function (arr, k) {
-  let current = 1;
-  let i = 0;
+var maxNonOverlapping = function (nums, target) {
+  let set = new Set();
+  set.add(0);
 
-  while (k > 0) {
-    // Number exists in array
-    if (i < arr.length && arr[i] === current) {
-      i++;
+  let prefixSum = 0;
+  let count = 0;
+
+  for (let num of nums) {
+    prefixSum += num;
+
+    // Found a subarray with sum = target
+    if (set.has(prefixSum - target)) {
+      count++;
+
+      // Reset for non-overlapping subarrays
+      set.clear();
+      set.add(0);
+
+      prefixSum = 0;
     } else {
-      k--;
-      if (k === 0) {
-        return current;
-      }
+      set.add(prefixSum);
     }
-
-    current++;
   }
+
+  return count;
 };
