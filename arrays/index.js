@@ -1,18 +1,13 @@
-var divisibilityArray = function (word, m) {
-  const n = word.length;
-  const result = new Array(n).fill(0);
+var vowelStrings = function (words, left, right) {
+  const vowels = new Set(["a", "e", "i", "o", "u"]);
+  let count = 0;
 
-  let rem = 0;
-
-  for (let i = 0; i < n; i++) {
-    const digit = word[i] - "0";
-
-    rem = (rem * 10 + digit) % m;
-
-    if (rem === 0) {
-      result[i] = 1;
+  for (let i = left; i <= right; i++) {
+    const word = words[i];
+    if (vowels.has(word[0]) && vowels.has(word[word.length - 1])) {
+      count++;
     }
   }
 
-  return result;
+  return count;
 };
