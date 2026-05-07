@@ -1,13 +1,29 @@
-var vowelStrings = function (words, left, right) {
-  const vowels = new Set(["a", "e", "i", "o", "u"]);
-  let count = 0;
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
 
-  for (let i = left; i <= right; i++) {
-    const word = words[i];
-    if (vowels.has(word[0]) && vowels.has(word[word.length - 1])) {
-      count++;
-    }
+/**
+ * @param {number[]} nums
+ * @return {TreeNode}
+ */
+var sortedArrayToBST = function (nums) {
+  function build(left, right) {
+    if (left > right) return null;
+
+    let mid = Math.floor((left + right) / 2);
+
+    let root = new TreeNode(nums[mid]);
+
+    root.left = build(left, mid - 1);
+    root.right = build(mid + 1, right);
+
+    return root;
   }
 
-  return count;
+  return build(0, nums.length - 1);
 };
