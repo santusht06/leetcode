@@ -1,24 +1,18 @@
 /**
- * @param {number} numRows
- * @return {number[][]}
+ * @param {number} rowIndex
+ * @return {number[]}
  */
-var generate = function (numRows) {
-  let result = [];
+var getRow = function (rowIndex) {
+  let row = [1];
 
-  for (let i = 0; i < numRows; i++) {
-    let row = [];
-
-    for (let j = 0; j <= i; j++) {
-      // First and last element are always 1
-      if (j === 0 || j === i) {
-        row.push(1);
-      } else {
-        row.push(result[i - 1][j - 1] + result[i - 1][j]);
-      }
+  for (let i = 1; i <= rowIndex; i++) {
+    // Update from right to left
+    for (let j = i - 1; j > 0; j--) {
+      row[j] = row[j] + row[j - 1];
     }
 
-    result.push(row);
+    row.push(1);
   }
 
-  return result;
+  return row;
 };
