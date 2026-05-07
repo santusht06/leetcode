@@ -1,18 +1,17 @@
 /**
- * @param {number} rowIndex
- * @return {number[]}
+ * @param {number[][]} triangle
+ * @return {number}
  */
-var getRow = function (rowIndex) {
-  let row = [1];
+var minimumTotal = function (triangle) {
+  // Copy last row
+  let dp = triangle[triangle.length - 1].slice();
 
-  for (let i = 1; i <= rowIndex; i++) {
-    // Update from right to left
-    for (let j = i - 1; j > 0; j--) {
-      row[j] = row[j] + row[j - 1];
+  // Start from second last row
+  for (let i = triangle.length - 2; i >= 0; i--) {
+    for (let j = 0; j <= i; j++) {
+      dp[j] = triangle[i][j] + Math.min(dp[j], dp[j + 1]);
     }
-
-    row.push(1);
   }
 
-  return row;
+  return dp[0];
 };
