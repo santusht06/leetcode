@@ -1,17 +1,8 @@
-// load-test.js
-
-import http from "k6/http";
-import { sleep } from "k6";
-
-export const options = {
-  vus: 1500000, // virtual users
-  duration: "30s",
-};
-
-export default function () {
-  const res = http.get("https://google.com");
-
-  console.log(res.status);
-
-  sleep(1);
+function test(input_1, input_2) {
+  ((this.input_1 = input_1), (this.input_2 = input_2));
+  return input_1 + input_2;
 }
+
+let t1 = new test(1, 3);
+
+console.log(t1);
