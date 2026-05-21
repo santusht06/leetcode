@@ -1,65 +1,113 @@
 /**
- * @param {number[][]} mat
+ * @param {number[]} nums
  * @return {number}
  */
-var minFlips = function (mat) {
-  let m = mat.length,
-    n = mat[0].length;
+var minJumps = function (nums) {
+  const n = nums.length;
 
-  // convert matrix to bitmask
-  const getMask = (mat) => {
-    let mask = 0;
-    let pos = 0;
-    for (let i = 0; i < m; i++) {
-      for (let j = 0; j < n; j++) {
-        if (mat[i][j] === 1) {
-          mask |= 1 << pos;
-        }
-        pos++;
+  // edge case
+  if (n === 1) return 0;
+
+  // ---------------- PRIME CHECK ----------------
+  function isPrime(num) {
+    if (num <= 1) return false;
+    if (num <= 3) return true;
+
+    if (num % 2 === 0 || num % 3 === 0) return false;
+
+    for (let i = 5; i * i <= num; i += 6) {
+      if (num % i === 0 || num % (i + 2) === 0) {
+        return false;
       }
     }
-    return mask;
-  };
 
-  let start = getMask(mat);
-  if (start === 0) return 0;
+    return true;
+  }
 
-  let visited = new Set();
-  let queue = [[start, 0]];
+  // ---------------- BUILD PRIME -> INDICES MAP ----------------
 
-  visited.add(start);
+  // Example:
+  // 2 => [indices having numbers divisible by 2]
+  // 3 => [indices having numbers divisible by 3]
 
-  // directions (self + 4 neighbors)
-  let dirs = [
-    [0, 0],
-    [1, 0],
-    [-1, 0],
-    [0, 1],
-    [0, -1],
-  ];
+  const teleportMap = new Map();
 
-  while (queue.length) {
-    let [state, steps] = queue.shift();
+  for (let i = 0; i < n; i++) {
+    const value = nums[i];
 
-    for (let i = 0; i < m; i++) {
-      for (let j = 0; j < n; j++) {
-        let next = state;
+    // find all prime factors
+    let temp = value;
 
-        for (let [dx, dy] of dirs) {
-          let x = i + dx;
-          let y = j + dy;
-
-          if (x >= 0 && x < m && y >= 0 && y < n) {
-            let pos = x * n + y;
-            next ^= 1 << pos; // flip bit
-          }
+    for (let p = 2; p * p <= temp; p++) {
+      if (temp % p === 0) {
+        if (!teleportMap.has(p)) {
+          teleportMap.set(p, []);
         }
 
-        if (next === 0) return steps + 1;
+        teleportMap.get(p).push(i);
 
-        if (!visited.has(next)) {
-          visited.add(next);
-          queue.push([next, steps + 1]);
+        while (temp % p === 0) {
+          temp /= p;
+        }
+      }
+    }
+
+    // remaining prime
+    if (temp > 1) {
+      if (!teleportMap.has(temp)) {
+        teleportMap.set(temp, []);
+      }
+
+      teleportMap.get(temp).push(i);
+    }
+  }
+
+  // ---------------- BFS ----------------
+
+  const queue = [[0, 0]]; // [index, jumps]
+  const visited = new Array(n).fill(false);
+
+  visited[0] = true;
+
+  // avoid reusing same prime teleport repeatedly
+  const usedPrime = new Set();
+
+  while (queue.length > 0) {
+    const [index, jumps] = queue.shift();
+
+    // reached end
+    if (index === n - 1) {
+      return jumps;
+    }
+
+    // ---------------- ADJACENT MOVES ----------------
+
+    const left = index - 1;
+    const right = index + 1;
+
+    if (left >= 0 && !visited[left]) {
+      visited[left] = true;
+      queue.push([left, jumps + 1]);
+    }
+
+    if (right < n && !visited[right]) {
+      visited[right] = true;
+      queue.push([right, jumps + 1]);
+    }
+
+    // ---------------- PRIME TELEPORT ----------------
+
+    const currentValue = nums[index];
+
+    if (isPrime(currentValue) && !usedPrime.has(currentValue)) {
+      usedPrime.add(currentValue);
+
+      const nextIndices = teleportMap.get(currentValue) || [];
+
+      for (let nextIndex of nextIndices) {
+        if (!visited[nextIndex]) {
+          visited[nextIndex] = true;
+          queue.push([nextIndex, jumps + 1]);
         }
       }
     }
@@ -67,3 +115,9 @@ var minFlips = function (mat) {
 
   return -1;
 };
+
+// ---------------- TEST ----------------
+
+console.log(minJumps([1, 2, 4, 6])); // 2
+console.log(minJumps([2, 3, 4, 7, 9])); // 2
+console.log(minJumps([4, 6, 5, 8])); // 3
