@@ -1,15 +1,20 @@
-var isAdditiveNumber = function (num) {
-  num = num.split("").map(Number);
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var findUnsortedSubarray = function (nums) {
+  let sort = [...nums].sort((a, b) => a - b);
 
-  for (let i = 0; i < num.length - 2; i++) {
-    if (num[i] + num[i + 1] === num[i + 2]) {
-      return true;
-    } else {
-      return false;
+  let count = 1;
+  for (let i = 0; i <= nums.length; i++) {
+    if (nums[i] != sort[i]) {
+      count++;
     }
   }
+
+  return count;
 };
 
-let num = "112358";
+nums = [2, 6, 4, 8, 10, 9, 15];
 
-console.log(isAdditiveNumber(num));
+console.log(findUnsortedSubarray(nums));
