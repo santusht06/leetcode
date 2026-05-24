@@ -1,39 +1,15 @@
-var MedianFinder = function () {
-  this.arr = [];
-};
+var isAdditiveNumber = function (num) {
+  num = num.split("").map(Number);
 
-/**
- * @param {number} num
- * @return {void}
- */
-MedianFinder.prototype.addNum = function (num) {
-  this.arr.push(num);
-  this.arr.sort((a, b) => a - b);
-};
-
-/**
- * @return {number}
- */
-MedianFinder.prototype.findMedian = function () {
-  let n = this.arr.length;
-
-  // odd length
-  if (n % 2 === 1) {
-    return this.arr[Math.floor(n / 2)];
+  for (let i = 0; i < num.length - 2; i++) {
+    if (num[i] + num[i + 1] === num[i + 2]) {
+      return true;
+    } else {
+      return false;
+    }
   }
-
-  // even length
-  return (this.arr[n / 2] + this.arr[n / 2 - 1]) / 2;
 };
 
-/**
- * Your MedianFinder object will be instantiated and called as such:
- * var obj = new MedianFinder()
- * obj.addNum(num)
- * var param_2 = obj.findMedian()
- */
+let num = "112358";
 
-var obj = new MedianFinder();
-
-obj.addNum(2);
-console.log(obj);
+console.log(isAdditiveNumber(num));
