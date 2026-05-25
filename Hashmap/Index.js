@@ -1,20 +1,37 @@
 /**
  * @param {number[]} nums
+ * @param {number} k
  * @return {number}
  */
-var findUnsortedSubarray = function (nums) {
-  let sort = [...nums].sort((a, b) => a - b);
+var splitArray = function (nums, k) {
+  let left = Math.max(...nums);
+  let right = nums.reduce((a, b) => a + b, 0);
 
-  let count = 1;
-  for (let i = 0; i <= nums.length; i++) {
-    if (nums[i] != sort[i]) {
-      count++;
+  while (left < right) {
+    let mid = Math.floor((left + right) / 2);
+
+    let pieces = 1;
+    let sum = 0;
+
+    for (let num of nums) {
+      // need new subarray
+      if (sum + num > mid) {
+        pieces++;
+        sum = num;
+      } else {
+        sum += num;
+      }
+    }
+
+    // too many pieces -> increase limit
+    if (pieces > k) {
+      left = mid + 1;
+    }
+    // valid -> try smaller answer
+    else {
+      right = mid;
     }
   }
 
-  return count;
+  return left;
 };
-
-nums = [2, 6, 4, 8, 10, 9, 15];
-
-console.log(findUnsortedSubarray(nums));
