@@ -1,37 +1,97 @@
 /**
- * @param {number[]} nums
- * @param {number} k
+ * @param {string} password
  * @return {number}
  */
-var splitArray = function (nums, k) {
-  let left = Math.max(...nums);
-  let right = nums.reduce((a, b) => a + b, 0);
+var strongPasswordChecker = function (password) {
+  let missingTypes = 0;
 
-  while (left < right) {
-    let mid = Math.floor((left + right) / 2);
+  // check lowercase
+  if (!/[a-z]/.test(password)) {
+    missingTypes++;
+  }
 
-    let pieces = 1;
-    let sum = 0;
+  // check uppercase
+  if (!/[A-Z]/.test(password)) {
+    missingTypes++;
+  }
 
-    for (let num of nums) {
-      // need new subarray
-      if (sum + num > mid) {
-        pieces++;
-        sum = num;
-      } else {
-        sum += num;
+  // check digit
+  if (!/[0-9]/.test(password)) {
+    missingTypes++;
+  }
+
+  let n = password.length;
+
+  // case 1 -> length less than 6
+  if (n < 6) {
+    return Math.max(6 - n, missingTypes);
+  }
+
+  // case 2 -> valid length
+  if (n <= 20) {
+    let replace = 0;
+
+    // count repeating characters
+    for (let i = 0; i < n; ) {
+      let j = i;
+
+      while (j < n && password[j] === password[i]) {
+        j++;
       }
+
+      let len = j - i;
+
+      // every 3 consecutive chars need 1 replace
+      replace += Math.floor(len / 3);
+
+      i = j;
     }
 
-    // too many pieces -> increase limit
-    if (pieces > k) {
-      left = mid + 1;
+    return Math.max(replace, missingTypes);
+  }
+
+  // case 3 -> length > 20
+
+  let deleteCount = n - 20;
+  let replace = 0;
+
+  let arr = [];
+
+  for (let i = 0; i < n; ) {
+    let j = i;
+
+    while (j < n && password[j] === password[i]) {
+      j++;
     }
-    // valid -> try smaller answer
-    else {
-      right = mid;
+
+    let len = j - i;
+
+    if (len >= 3) {
+      arr.push(len);
+    }
+
+    i = j;
+  }
+
+  // greedy deletion optimization
+  arr.sort((a, b) => (a % 3) - (b % 3));
+
+  for (let i = 0; i < arr.length && deleteCount > 0; i++) {
+    let need = (arr[i] % 3) + 1;
+
+    if (deleteCount >= need) {
+      arr[i] -= need;
+      deleteCount -= need;
     }
   }
 
-  return left;
+  for (let len of arr) {
+    if (len >= 3) {
+      replace += Math.floor(len / 3);
+    }
+  }
+
+  return n - 20 + Math.max(replace, missingTypes);
 };
+
+console.log(strongPasswordChecker("a"));
