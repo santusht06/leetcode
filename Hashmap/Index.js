@@ -1,20 +1,27 @@
-var findDuplicates = function (nums) {
+/**
+ * @param {string} s
+ * @return {string}
+ */
+var frequencySort = function (s) {
   let map = new Map();
-  nums = nums.sort((a, b) => a - b);
 
-  let result = [];
+  for (let char of s) {
+    map.set(char, (map.get(char) || 0) + 1);
+  }
 
-  for (let words of nums) {
-    map.set(words, (map.get(words) || 0) + 1);
+  let arr = [...map.keys()];
 
-    if (map.get(words) == 2) {
-      result.push(words);
-    }
+  test = arr.sort((a, b) => map.get(b) - map.get(a));
+
+  let result = "";
+
+  for (let char of arr) {
+    result += char.repeat(map.get(char));
   }
 
   return result;
 };
 
-nums = [4, 3, 2, 7, 8, 2, 3, 1];
+let s = "tree";
 
-console.log(findDuplicates(nums));
+console.log(frequencySort(s));
