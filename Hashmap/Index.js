@@ -1,87 +1,45 @@
 /**
- * @param {string} password
+ * @param {number[]} nums
+ * @param {number} k
  * @return {number}
  */
-var strongPasswordChecker = function (password) {
-  let missingTypes = 0;
+var findKthLargest = function (nums, k) {
+  let target = nums.length - k;
 
-  if (!/[a-z]/.test(password)) {
-    missingTypes++;
-  }
+  const quickSelect = (left, right) => {
+    let pivot = nums[right];
 
-  if (!/[A-Z]/.test(password)) {
-    missingTypes++;
-  }
+    let p = left;
 
-  if (!/[0-9]/.test(password)) {
-    missingTypes++;
-  }
+    // partition
+    for (let i = left; i < right; i++) {
+      if (nums[i] <= pivot) {
+        [nums[i], nums[p]] = [nums[p], nums[i]];
 
-  let n = password.length;
-
-  if (n < 6) {
-    return Math.max(6 - n, missingTypes);
-  }
-
-  if (n <= 20) {
-    let replace = 0;
-
-    for (let i = 0; i < n; ) {
-      let j = i;
-
-      while (j < n && password[j] === password[i]) {
-        j++;
+        p++;
       }
-
-      let len = j - i;
-
-      replace += Math.floor(len / 3);
-
-      i = j;
     }
 
-    return Math.max(replace, missingTypes);
-  }
+    [nums[p], nums[right]] = [nums[right], nums[p]];
 
-  let deleteCount = n - 20;
-  let replace = 0;
-
-  let arr = [];
-
-  for (let i = 0; i < n; ) {
-    let j = i;
-
-    while (j < n && password[j] === password[i]) {
-      j++;
+    // found answer
+    if (p === target) {
+      return nums[p];
     }
 
-    let len = j - i;
-
-    if (len >= 3) {
-      arr.push(len);
+    // search right
+    if (p < target) {
+      return quickSelect(p + 1, right);
     }
 
-    i = j;
-  }
+    // search left
+    return quickSelect(left, p - 1);
+  };
 
-  arr.sort((a, b) => (a % 3) - (b % 3));
-
-  for (let i = 0; i < arr.length && deleteCount > 0; i++) {
-    let need = (arr[i] % 3) + 1;
-
-    if (deleteCount >= need) {
-      arr[i] -= need;
-      deleteCount -= need;
-    }
-  }
-
-  for (let len of arr) {
-    if (len >= 3) {
-      replace += Math.floor(len / 3);
-    }
-  }
-
-  return n - 20 + Math.max(replace, missingTypes);
+  return quickSelect(0, nums.length - 1);
 };
 
-console.log(strongPasswordChecker("a"));
+let nums = [3, 2, 1, 5, 6, 4];
+let k = 2;
+
+console.log(findKthLargest(nums, k));
