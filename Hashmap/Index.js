@@ -5,33 +5,27 @@
 var strongPasswordChecker = function (password) {
   let missingTypes = 0;
 
-  // check lowercase
   if (!/[a-z]/.test(password)) {
     missingTypes++;
   }
 
-  // check uppercase
   if (!/[A-Z]/.test(password)) {
     missingTypes++;
   }
 
-  // check digit
   if (!/[0-9]/.test(password)) {
     missingTypes++;
   }
 
   let n = password.length;
 
-  // case 1 -> length less than 6
   if (n < 6) {
     return Math.max(6 - n, missingTypes);
   }
 
-  // case 2 -> valid length
   if (n <= 20) {
     let replace = 0;
 
-    // count repeating characters
     for (let i = 0; i < n; ) {
       let j = i;
 
@@ -41,7 +35,6 @@ var strongPasswordChecker = function (password) {
 
       let len = j - i;
 
-      // every 3 consecutive chars need 1 replace
       replace += Math.floor(len / 3);
 
       i = j;
@@ -49,8 +42,6 @@ var strongPasswordChecker = function (password) {
 
     return Math.max(replace, missingTypes);
   }
-
-  // case 3 -> length > 20
 
   let deleteCount = n - 20;
   let replace = 0;
@@ -73,7 +64,6 @@ var strongPasswordChecker = function (password) {
     i = j;
   }
 
-  // greedy deletion optimization
   arr.sort((a, b) => (a % 3) - (b % 3));
 
   for (let i = 0; i < arr.length && deleteCount > 0; i++) {
