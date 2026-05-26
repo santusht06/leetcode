@@ -1,24 +1,22 @@
 /**
- * @param {number[]} nums
- * @return {number[]}
+ * @param {number} n
+ * @return {boolean}
  */
-var minBitwiseArray = function (nums) {
-  let ans = [];
+var isHappy = function (n) {
+  let seen = new Set();
 
-  for (let num of nums) {
-    let found = -1;
+  while (n !== 1 && !seen.has(n)) {
+    seen.add(n);
 
-    for (let x = 0; x < num; x++) {
-      if ((x | (x + 1)) === num) {
-        found = x;
-        break;
-      }
-    }
-
-    ans.push(found);
+    n = String(n)
+      .split("")
+      .map(Number)
+      .reduce((sum, digit) => sum + digit * digit, 0);
   }
 
-  return ans;
+  return n === 1;
 };
 
-console.log(minBitwiseArray([2, 3, 5, 7]));
+let n = 19;
+
+console.log(isHappy(n));
