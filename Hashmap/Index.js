@@ -1,22 +1,16 @@
-var countNegatives = function (grid) {
-  let count = 0;
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var repeatedNTimes = function (nums) {
+  const counts = new Set();
 
-  grid = grid.flat();
-
-  grid.forEach((element) => {
-    if (element < 0) {
-      count++;
-    }
-  });
-
-  return count;
+  for (const n of nums) {
+    if (counts.has(n)) return n;
+    console.log(counts.add(n));
+  }
 };
 
-grid = [
-  [4, 3, 2, -1],
-  [3, 2, 1, -1],
-  [1, 1, -1, -2],
-  [-1, -1, -2, -3],
-];
+nums = [1, 2, 3, 3];
 
-console.log(countNegatives(grid));
+console.log(repeatedNTimes(nums));
