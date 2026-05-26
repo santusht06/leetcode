@@ -1,16 +1,24 @@
 /**
  * @param {number[]} nums
- * @return {number}
+ * @return {number[]}
  */
-var repeatedNTimes = function (nums) {
-  const counts = new Set();
+var minBitwiseArray = function (nums) {
+  let ans = [];
 
-  for (const n of nums) {
-    if (counts.has(n)) return n;
-    console.log(counts.add(n));
+  for (let num of nums) {
+    let found = -1;
+
+    for (let x = 0; x < num; x++) {
+      if ((x | (x + 1)) === num) {
+        found = x;
+        break;
+      }
+    }
+
+    ans.push(found);
   }
+
+  return ans;
 };
 
-nums = [1, 2, 3, 3];
-
-console.log(repeatedNTimes(nums));
+console.log(minBitwiseArray([2, 3, 5, 7]));
