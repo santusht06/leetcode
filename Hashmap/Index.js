@@ -1,27 +1,22 @@
-/**
- * @param {string} s
- * @return {string}
- */
-var frequencySort = function (s) {
-  let map = new Map();
+var countNegatives = function (grid) {
+  let count = 0;
 
-  for (let char of s) {
-    map.set(char, (map.get(char) || 0) + 1);
-  }
+  grid = grid.flat();
 
-  let arr = [...map.keys()];
+  grid.forEach((element) => {
+    if (element < 0) {
+      count++;
+    }
+  });
 
-  test = arr.sort((a, b) => map.get(b) - map.get(a));
-
-  let result = "";
-
-  for (let char of arr) {
-    result += char.repeat(map.get(char));
-  }
-
-  return result;
+  return count;
 };
 
-let s = "tree";
+grid = [
+  [4, 3, 2, -1],
+  [3, 2, 1, -1],
+  [1, 1, -1, -2],
+  [-1, -1, -2, -3],
+];
 
-console.log(frequencySort(s));
+console.log(countNegatives(grid));
