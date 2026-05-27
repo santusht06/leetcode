@@ -1,41 +1,32 @@
-/**
- * @param {string} word
- * @return {number}
- */
-var numberOfSpecialChars = function (word) {
-  let lowerLast = new Map();
-  let upperFirst = new Map();
-
-  // store positions
-  for (let i = 0; i < word.length; i++) {
-    let ch = word[i];
-
-    // lowercase
-    if (ch >= "a" && ch <= "z") {
-      lowerLast.set(ch, i);
-    }
-
-    // uppercase
-    else {
-      let lower = ch.toLowerCase();
-
-      // first uppercase only
-      if (!upperFirst.has(lower)) {
-        upperFirst.set(lower, i);
-      }
-    }
-  }
-
-  let count = 0;
-
-  // compare positions
-  for (let [ch, idx] of lowerLast) {
-    if (upperFirst.has(ch) && idx < upperFirst.get(ch)) {
-      count++;
-    }
-  }
-
-  return count;
+var MinStack = function () {
+  this.stack = [];
 };
 
-console.log(numberOfSpecialChars("aaAbcBC"));
+/**
+ * @param {number} val
+ * @return {void}
+ */
+MinStack.prototype.push = function (val) {
+  this.stack.push(val);
+};
+
+/**
+ * @return {void}
+ */
+MinStack.prototype.pop = function () {
+  this.stack.pop();
+};
+
+/**
+ * @return {number}
+ */
+MinStack.prototype.top = function () {
+  return this.stack[this.stack.length - 1];
+};
+
+/**
+ * @return {number}
+ */
+MinStack.prototype.getMin = function () {
+  return Math.min(...this.stack);
+};
