@@ -1,22 +1,41 @@
 /**
- * @param {number} n
- * @return {boolean}
+ * @param {string} word
+ * @return {number}
  */
-var isHappy = function (n) {
-  let seen = new Set();
+var numberOfSpecialChars = function (word) {
+  let lowerLast = new Map();
+  let upperFirst = new Map();
 
-  while (n !== 1 && !seen.has(n)) {
-    seen.add(n);
+  // store positions
+  for (let i = 0; i < word.length; i++) {
+    let ch = word[i];
 
-    n = String(n)
-      .split("")
-      .map(Number)
-      .reduce((sum, digit) => sum + digit * digit, 0);
+    // lowercase
+    if (ch >= "a" && ch <= "z") {
+      lowerLast.set(ch, i);
+    }
+
+    // uppercase
+    else {
+      let lower = ch.toLowerCase();
+
+      // first uppercase only
+      if (!upperFirst.has(lower)) {
+        upperFirst.set(lower, i);
+      }
+    }
   }
 
-  return n === 1;
+  let count = 0;
+
+  // compare positions
+  for (let [ch, idx] of lowerLast) {
+    if (upperFirst.has(ch) && idx < upperFirst.get(ch)) {
+      count++;
+    }
+  }
+
+  return count;
 };
 
-let n = 19;
-
-console.log(isHappy(n));
+console.log(numberOfSpecialChars("aaAbcBC"));
