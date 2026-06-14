@@ -45,4 +45,4 @@ const task3 = () => delay(300).then(() => console.log("Task 3 Done"));
 
 scheduler.add(task1);
 scheduler.add(task2);
-scheduler.add(task3); // Will wait until task 2 completes
+scheduler.add(task3);
