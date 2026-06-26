@@ -1,18 +1,41 @@
-/**
- * @param {number} n
- * @return {boolean}
- */
-var isStrictlyPalindromic = function (n) {
-  for (let base = 2; base <= n - 2; base++) {
-    const str = n.toString(base);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
 
-    if (str !== str.split("").reverse().join("")) {
-      return false;
-    }
+class Tree {
+  constructor() {
+    this.root = null;
   }
 
-  return true;
-};
+  createNode(value) {
+    this.root = this.insertNode(this.root, value);
+  }
 
-let n = 9;
-console.log(isStrictlyPalindromic(n));
+  insertNode(node, value) {
+    if (node == null) {
+      return new Node(value);
+    }
+
+    if (value < node.value) {
+      node.left = this.insertNode(node.left, value);
+    } else {
+      node.right = this.insertNode(node.right, value);
+    }
+
+    return node;
+  }
+}
+
+const T1 = new Tree();
+
+T1.createNode(10);
+T1.createNode(5);
+T1.createNode(20);
+T1.createNode(15);
+T1.createNode(70);
+
+console.log(T1);
