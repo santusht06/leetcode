@@ -1,20 +1,13 @@
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
 var findNonMinOrMax = function (nums) {
-  if (nums.length <= 2) return -1;
-  let max = Math.max(...nums);
+    if (nums.length < 3) return -1;
 
-  let min = Math.min(...nums);
+    const a = nums[0];
+    const b = nums[1];
+    const c = nums[2];
 
-  let result = [];
-
-  nums.forEach((element) => {
-    if (element != max && element != min) {
-      result.push(element);
-    }
-  });
-
-  return result[Math.floor(Math.random() * result.length)];
+    return a + b + c - Math.max(a, b, c) - Math.min(a, b, c);
 };
-
-nums = [1, 2];
-
-console.log(findNonMinOrMax(nums));
