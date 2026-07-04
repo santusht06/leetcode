@@ -1,20 +1,10 @@
 var sumOfEncryptedInt = function (nums) {
-  let result = [];
-
-  for (let n of nums) {
-    result.push(encrypt(n));
-  }
-
-  return result.reduce((acc, crr) => acc + crr, 0);
+  return nums.reduce((sum, num) => sum + encrypt(num), 0);
 };
 
-nums = [10, 21, 31];
-function encrypt(Num) {
-  let res = String(Num).split("");
+function encrypt(num) {
+  const digits = String(num).split("");
+  const maxDigit = Math.max(...digits);
 
-  const newArray = new Array(res.length).fill(Math.max(...res));
-
-  return Number(newArray.map(String).join(""));
+  return Number(String(maxDigit).repeat(digits.length));
 }
-
-console.log(sumOfEncryptedInt(nums));
