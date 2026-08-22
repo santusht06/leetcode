@@ -4,9 +4,7 @@
  * @return {number}
  */
 var minOperations = function (nums, k) {
-  let sum = nums.reduce((acc, curr) => acc + curr, 0);
-
-  return sum % k;
+  return nums.reduce((acc, curr) => acc + curr, 0) % k;
 };
 
 ((nums = [3, 2]), (k = 6));
