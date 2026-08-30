@@ -9,3 +9,14 @@ A collection of JavaScript solutions for LeetCode problems. Each solution is org
 
 ## Running a Solution
 
+You can run any solution with Node.js:
+
+```sh
+node path/to/solution.js
+```
+
+Replace `path/to/solution.js` with the relative path to the desired file.
+
+## Contributing
+
+Feel free to submit pull requests with additional problem solutions or improvements to existing ones.
