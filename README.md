@@ -11,6 +11,8 @@ A collection of JavaScript solutions for LeetCode problems. Each solution is org
 
 ## Running a Solution
 
+You can run any solution with Node.js:
+
 ```sh
 node path/to/solution.js
 ```
