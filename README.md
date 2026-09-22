@@ -1,5 +1,7 @@
 # leetcode
 
+![AI Maintained](https://img.shields.io/badge/readme-AI%20maintained-blue)
+
 A collection of JavaScript solutions for LeetCode problems. Each solution is organized in its own directory named after the problem number and title.
 
 ## Structure
@@ -8,8 +10,6 @@ A collection of JavaScript solutions for LeetCode problems. Each solution is org
 - Solution files are written in JavaScript and export a function that solves the problem.
 
 ## Running a Solution
-
-You can run any solution with Node.js:
 
 ```sh
 node path/to/solution.js
